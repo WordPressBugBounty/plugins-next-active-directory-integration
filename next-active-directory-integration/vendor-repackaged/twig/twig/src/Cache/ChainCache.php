@@ -8,7 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 28-October-2024 using Strauss.
+ * Modified by __root__ on 31-January-2025 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
@@ -22,7 +22,7 @@ namespace Dreitier\Nadi\Vendor\Twig\Cache;
  *
  * @author Quentin Devos <quentin@devos.pm>
  */
-final class ChainCache implements CacheInterface
+final class ChainCache implements CacheInterface, RemovableCacheInterface
 {
     /**
      * @param iterable<CacheInterface> $caches The ordered list of caches used to store and fetch cached items
@@ -70,6 +70,15 @@ final class ChainCache implements CacheInterface
         }
 
         return 0;
+    }
+
+    public function remove(string $name, string $cls): void
+    {
+        foreach ($this->caches as $cache) {
+            if ($cache instanceof RemovableCacheInterface) {
+                $cache->remove($name, $cls);
+            }
+        }
     }
 
     /**

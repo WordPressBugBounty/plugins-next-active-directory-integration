@@ -8,15 +8,17 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 28-October-2024 using Strauss.
+ * Modified by __root__ on 31-January-2025 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
 namespace Dreitier\Nadi\Vendor\Twig\TokenParser;
 
 use Dreitier\Nadi\Vendor\Twig\Error\SyntaxError;
+use Dreitier\Nadi\Vendor\Twig\Node\EmptyNode;
 use Dreitier\Nadi\Vendor\Twig\Node\Expression\ConstantExpression;
 use Dreitier\Nadi\Vendor\Twig\Node\Node;
+use Dreitier\Nadi\Vendor\Twig\Node\Nodes;
 use Dreitier\Nadi\Vendor\Twig\Token;
 
 /**
@@ -64,9 +66,9 @@ final class UseTokenParser extends AbstractTokenParser
 
         $stream->expect(Token::BLOCK_END_TYPE);
 
-        $this->parser->addTrait(new Node(['template' => $template, 'targets' => new Node($targets)]));
+        $this->parser->addTrait(new Nodes(['template' => $template, 'targets' => new Nodes($targets)]));
 
-        return new Node([], [], $token->getLine());
+        return new EmptyNode($token->getLine());
     }
 
     public function getTag(): string

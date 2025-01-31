@@ -8,13 +8,15 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 28-October-2024 using Strauss.
+ * Modified by __root__ on 31-January-2025 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
 namespace Dreitier\Nadi\Vendor\Twig\TokenParser;
 
-use Dreitier\Nadi\Vendor\Twig\Node\Expression\AssignNameExpression;
+use Dreitier\Nadi\Vendor\Twig\Node\Expression\Variable\AssignContextVariable;
+use Dreitier\Nadi\Vendor\Twig\Node\Expression\Variable\AssignTemplateVariable;
+use Dreitier\Nadi\Vendor\Twig\Node\Expression\Variable\TemplateVariable;
 use Dreitier\Nadi\Vendor\Twig\Node\ImportNode;
 use Dreitier\Nadi\Vendor\Twig\Node\Node;
 use Dreitier\Nadi\Vendor\Twig\Token;
@@ -22,7 +24,7 @@ use Dreitier\Nadi\Vendor\Twig\Token;
 /**
  * Imports macros.
  *
- *   {% from 'forms.html' import forms %}
+ *   {% from 'forms.html.twig' import forms %}
  *
  * @internal
  */
@@ -38,9 +40,10 @@ final class FromTokenParser extends AbstractTokenParser
         while (true) {
             $name = $stream->expect(Token::NAME_TYPE)->getValue();
 
-            $alias = $name;
             if ($stream->nextIf('as')) {
-                $alias = $stream->expect(Token::NAME_TYPE)->getValue();
+                $alias = new AssignContextVariable($stream->expect(Token::NAME_TYPE)->getValue(), $token->getLine());
+            } else {
+                $alias = new AssignContextVariable($name, $token->getLine());
             }
 
             $targets[$name] = $alias;
@@ -52,11 +55,11 @@ final class FromTokenParser extends AbstractTokenParser
 
         $stream->expect(Token::BLOCK_END_TYPE);
 
-        $var = new AssignNameExpression($this->parser->getVarName(), $token->getLine());
-        $node = new ImportNode($macro, $var, $token->getLine(), $this->parser->isMainScope());
+        $internalRef = new AssignTemplateVariable(new TemplateVariable(null, $token->getLine()), $this->parser->isMainScope());
+        $node = new ImportNode($macro, $internalRef, $token->getLine());
 
         foreach ($targets as $name => $alias) {
-            $this->parser->addImportedSymbol('function', $alias, 'macro_'.$name, $var);
+            $this->parser->addImportedSymbol('function', $alias->getAttribute('name'), 'macro_'.$name, $internalRef);
         }
 
         return $node;

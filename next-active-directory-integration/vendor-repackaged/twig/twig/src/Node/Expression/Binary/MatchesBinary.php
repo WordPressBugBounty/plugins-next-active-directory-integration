@@ -8,16 +8,34 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 28-October-2024 using Strauss.
+ * Modified by __root__ on 31-January-2025 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
 namespace Dreitier\Nadi\Vendor\Twig\Node\Expression\Binary;
 
 use Dreitier\Nadi\Vendor\Twig\Compiler;
+use Dreitier\Nadi\Vendor\Twig\Error\SyntaxError;
+use Dreitier\Nadi\Vendor\Twig\Node\Expression\ConstantExpression;
+use Dreitier\Nadi\Vendor\Twig\Node\Node;
 
 class MatchesBinary extends AbstractBinary
 {
+    public function __construct(Node $left, Node $right, int $lineno)
+    {
+        if ($right instanceof ConstantExpression) {
+            $regexp = $right->getAttribute('value');
+            set_error_handler(static fn ($t, $m) => throw new SyntaxError(\sprintf('Regexp "%s" passed to "matches" is not valid: %s.', $regexp, substr($m, 14)), $lineno));
+            try {
+                preg_match($regexp, '');
+            } finally {
+                restore_error_handler();
+            }
+        }
+
+        parent::__construct($left, $right, $lineno);
+    }
+
     public function compile(Compiler $compiler): void
     {
         $compiler

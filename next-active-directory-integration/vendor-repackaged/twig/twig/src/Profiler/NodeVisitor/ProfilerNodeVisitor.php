@@ -8,7 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 28-October-2024 using Strauss.
+ * Modified by __root__ on 31-January-2025 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
@@ -20,6 +20,7 @@ use Dreitier\Nadi\Vendor\Twig\Node\BodyNode;
 use Dreitier\Nadi\Vendor\Twig\Node\MacroNode;
 use Dreitier\Nadi\Vendor\Twig\Node\ModuleNode;
 use Dreitier\Nadi\Vendor\Twig\Node\Node;
+use Dreitier\Nadi\Vendor\Twig\Node\Nodes;
 use Dreitier\Nadi\Vendor\Twig\NodeVisitor\NodeVisitorInterface;
 use Dreitier\Nadi\Vendor\Twig\Profiler\Node\EnterProfileNode;
 use Dreitier\Nadi\Vendor\Twig\Profiler\Node\LeaveProfileNode;
@@ -46,8 +47,8 @@ final class ProfilerNodeVisitor implements NodeVisitorInterface
     public function leaveNode(Node $node, Environment $env): ?Node
     {
         if ($node instanceof ModuleNode) {
-            $node->setNode('display_start', new Node([new EnterProfileNode($this->extensionName, Profile::TEMPLATE, $node->getTemplateName(), $this->varName), $node->getNode('display_start')]));
-            $node->setNode('display_end', new Node([new LeaveProfileNode($this->varName), $node->getNode('display_end')]));
+            $node->setNode('display_start', new Nodes([new EnterProfileNode($this->extensionName, Profile::TEMPLATE, $node->getTemplateName(), $this->varName), $node->getNode('display_start')]));
+            $node->setNode('display_end', new Nodes([new LeaveProfileNode($this->varName), $node->getNode('display_end')]));
         } elseif ($node instanceof BlockNode) {
             $node->setNode('body', new BodyNode([
                 new EnterProfileNode($this->extensionName, Profile::BLOCK, $node->getAttribute('name'), $this->varName),

@@ -8,14 +8,15 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 28-October-2024 using Strauss.
+ * Modified by __root__ on 31-January-2025 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
 namespace Dreitier\Nadi\Vendor\Twig\TokenParser;
 
-use Dreitier\Nadi\Vendor\Twig\Node\Expression\TempNameExpression;
+use Dreitier\Nadi\Vendor\Twig\Node\Expression\Variable\LocalVariable;
 use Dreitier\Nadi\Vendor\Twig\Node\Node;
+use Dreitier\Nadi\Vendor\Twig\Node\Nodes;
 use Dreitier\Nadi\Vendor\Twig\Node\PrintNode;
 use Dreitier\Nadi\Vendor\Twig\Node\SetNode;
 use Dreitier\Nadi\Vendor\Twig\Token;
@@ -34,21 +35,17 @@ final class ApplyTokenParser extends AbstractTokenParser
     public function parse(Token $token): Node
     {
         $lineno = $token->getLine();
-        $name = $this->parser->getVarName();
-
-        $ref = new TempNameExpression($name, $lineno);
-        $ref->setAttribute('always_defined', true);
-
+        $ref = new LocalVariable(null, $lineno);
         $filter = $this->parser->getExpressionParser()->parseFilterExpressionRaw($ref);
 
         $this->parser->getStream()->expect(Token::BLOCK_END_TYPE);
         $body = $this->parser->subparse([$this, 'decideApplyEnd'], true);
         $this->parser->getStream()->expect(Token::BLOCK_END_TYPE);
 
-        return new Node([
+        return new Nodes([
             new SetNode(true, $ref, $body, $lineno),
             new PrintNode($filter, $lineno),
-        ], [], $lineno);
+        ], $lineno);
     }
 
     public function decideApplyEnd(Token $token): bool

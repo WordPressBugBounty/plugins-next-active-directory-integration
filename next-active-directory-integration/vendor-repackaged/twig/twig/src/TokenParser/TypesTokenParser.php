@@ -8,7 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 28-October-2024 using Strauss.
+ * Modified by __root__ on 31-January-2025 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
@@ -23,7 +23,7 @@ use Dreitier\Nadi\Vendor\Twig\TokenStream;
 /**
  * Declare variable types.
  *
- *  {% types {foo: 'int', bar?: 'string'} %}
+ *  {% types {foo: 'number', bar?: 'string'} %}
  *
  * @author Jeroen Versteeg <jeroen@alisqi.com>
  *
@@ -66,9 +66,13 @@ final class TypesTokenParser extends AbstractTokenParser
             $first = false;
 
             $nameToken = $stream->expect(Token::NAME_TYPE);
-            $isOptional = null !== $stream->nextIf(Token::PUNCTUATION_TYPE, '?');
 
-            $stream->expect(Token::PUNCTUATION_TYPE, ':', 'A type name must be followed by a colon (:)');
+            if ($stream->nextIf(Token::OPERATOR_TYPE, '?:')) {
+                $isOptional = true;
+            } else {
+                $isOptional = null !== $stream->nextIf(Token::PUNCTUATION_TYPE, '?');
+                $stream->expect(Token::PUNCTUATION_TYPE, ':', 'A type name must be followed by a colon (:)');
+            }
 
             $valueToken = $stream->expect(Token::STRING_TYPE);
 

@@ -8,7 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 28-October-2024 using Strauss.
+ * Modified by __root__ on 31-January-2025 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
@@ -17,6 +17,7 @@ namespace Dreitier\Nadi\Vendor\Twig;
 use Dreitier\Nadi\Vendor\Twig\Cache\CacheInterface;
 use Dreitier\Nadi\Vendor\Twig\Cache\FilesystemCache;
 use Dreitier\Nadi\Vendor\Twig\Cache\NullCache;
+use Dreitier\Nadi\Vendor\Twig\Cache\RemovableCacheInterface;
 use Dreitier\Nadi\Vendor\Twig\Error\Error;
 use Dreitier\Nadi\Vendor\Twig\Error\LoaderError;
 use Dreitier\Nadi\Vendor\Twig\Error\RuntimeError;
@@ -46,10 +47,10 @@ use Dreitier\Nadi\Vendor\Twig\TokenParser\TokenParserInterface;
  */
 class Environment
 {
-    public const VERSION = '3.14.0';
-    public const VERSION_ID = 31400;
+    public const VERSION = '3.18.0';
+    public const VERSION_ID = 31800;
     public const MAJOR_VERSION = 3;
-    public const MINOR_VERSION = 14;
+    public const MINOR_VERSION = 18;
     public const RELEASE_VERSION = 0;
     public const EXTRA_VERSION = '';
 
@@ -74,6 +75,7 @@ class Environment
     /** @var bool */
     private $useYield;
     private $defaultRuntimeLoader;
+    private array $hotCache = [];
 
     /**
      * Constructor.
@@ -236,6 +238,18 @@ class Environment
         return $this->strictVariables;
     }
 
+    public function removeCache(string $name): void
+    {
+        $cls = $this->getTemplateClass($name);
+        $this->hotCache[$name] = $cls.'_'.bin2hex(random_bytes(16));
+
+        if ($this->cache instanceof RemovableCacheInterface) {
+            $this->cache->remove($name, $cls);
+        } else {
+            throw new \LogicException(\sprintf('The "%s" cache class does not support removing template cache as it does not implement the "RemovableCacheInterface" interface.', \get_class($this->cache)));
+        }
+    }
+
     /**
      * Gets the current cache implementation.
      *
@@ -290,7 +304,7 @@ class Environment
      */
     public function getTemplateClass(string $name, ?int $index = null): string
     {
-        $key = $this->getLoader()->getCacheKey($name).$this->optionsHash;
+        $key = ($this->hotCache[$name] ?? $this->getLoader()->getCacheKey($name)).$this->optionsHash;
 
         return '__TwigTemplate_'.hash(\PHP_VERSION_ID < 80100 ? 'sha256' : 'xxh128', $key).(null === $index ? '' : '___'.$index);
     }
@@ -382,8 +396,10 @@ class Environment
             if (!class_exists($cls, false)) {
                 $source = $this->getLoader()->getSourceContext($name);
                 $content = $this->compileSource($source);
-                $this->cache->write($key, $content);
-                $this->cache->load($key);
+                if (!isset($this->hotCache[$name])) {
+                    $this->cache->write($key, $content);
+                    $this->cache->load($key);
+                }
 
                 if (!class_exists($mainCls, false)) {
                     /* Last line of defense if either $this->bcWriteCacheFile was used,
@@ -816,8 +832,6 @@ class Environment
     }
 
     /**
-     * @internal
-     *
      * @return array<string, mixed>
      */
     public function getGlobals(): array
@@ -852,7 +866,7 @@ class Environment
     /**
      * @internal
      *
-     * @return array<string, array{precedence: int, class: class-string<AbstractUnary>}>
+     * @return array<string, array{precedence: int, precedence_change?: OperatorPrecedenceChange, class: class-string<AbstractUnary>}>
      */
     public function getUnaryOperators(): array
     {
@@ -862,7 +876,7 @@ class Environment
     /**
      * @internal
      *
-     * @return array<string, array{precedence: int, class: class-string<AbstractBinary>, associativity: ExpressionParser::OPERATOR_*}>
+     * @return array<string, array{precedence: int, precedence_change?: OperatorPrecedenceChange, class: class-string<AbstractBinary>, associativity: ExpressionParser::OPERATOR_*}>
      */
     public function getBinaryOperators(): array
     {

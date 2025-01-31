@@ -8,7 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 28-October-2024 using Strauss.
+ * Modified by __root__ on 31-January-2025 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
@@ -540,5 +540,5 @@ function dreitier_nadi__twig_check_arrow_in_sandbox(Environment $env, $arrow, $t
 {
     trigger_deprecation('twig/twig', '3.9', 'Using the internal "%s" function is deprecated.', __FUNCTION__);
 
-    return CoreExtension::checkArrowInSandbox($env, $arrow, $thing, $type);
+    CoreExtension::checkArrow($env, $arrow, $thing, $type);
 }

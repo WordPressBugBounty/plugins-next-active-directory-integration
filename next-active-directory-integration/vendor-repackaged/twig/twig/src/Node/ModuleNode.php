@@ -9,7 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 28-October-2024 using Strauss.
+ * Modified by __root__ on 31-January-2025 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
@@ -47,11 +47,11 @@ final class ModuleNode extends Node
             'blocks' => $blocks,
             'macros' => $macros,
             'traits' => $traits,
-            'display_start' => new Node(),
-            'display_end' => new Node(),
-            'constructor_start' => new Node(),
-            'constructor_end' => new Node(),
-            'class_end' => new Node(),
+            'display_start' => new Nodes(),
+            'display_end' => new Nodes(),
+            'constructor_start' => new Nodes(),
+            'constructor_end' => new Nodes(),
+            'class_end' => new Nodes(),
         ];
         if (null !== $parent) {
             $nodes['parent'] = $parent;
@@ -247,7 +247,11 @@ final class ModuleNode extends Node
                         ->string($key)
                         ->raw(\sprintf(']; unset($_trait_%s_blocks[', $i))
                         ->string($key)
-                        ->raw("]);\n\n")
+                        ->raw(']); $this->traitAliases[')
+                        ->subcompile($value)
+                        ->raw('] = ')
+                        ->string($key)
+                        ->raw(";\n\n")
                     ;
                 }
             }
@@ -413,7 +417,7 @@ final class ModuleNode extends Node
             }
 
             if (!\count($nodes)) {
-                $nodes = new Node([$nodes]);
+                $nodes = new Nodes([$nodes]);
             }
 
             foreach ($nodes as $node) {

@@ -8,7 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 28-October-2024 using Strauss.
+ * Modified by __root__ on 31-January-2025 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
@@ -17,11 +17,13 @@ namespace Dreitier\Nadi\Vendor\Twig\Node\Expression\Test;
 use Dreitier\Nadi\Vendor\Twig\Attribute\FirstClassTwigCallableReady;
 use Dreitier\Nadi\Vendor\Twig\Compiler;
 use Dreitier\Nadi\Vendor\Twig\Error\SyntaxError;
+use Dreitier\Nadi\Vendor\Twig\Node\Expression\AbstractExpression;
 use Dreitier\Nadi\Vendor\Twig\Node\Expression\ArrayExpression;
 use Dreitier\Nadi\Vendor\Twig\Node\Expression\BlockReferenceExpression;
 use Dreitier\Nadi\Vendor\Twig\Node\Expression\ConstantExpression;
 use Dreitier\Nadi\Vendor\Twig\Node\Expression\FunctionExpression;
 use Dreitier\Nadi\Vendor\Twig\Node\Expression\GetAttrExpression;
+use Dreitier\Nadi\Vendor\Twig\Node\Expression\MacroReferenceExpression;
 use Dreitier\Nadi\Vendor\Twig\Node\Expression\MethodCallExpression;
 use Dreitier\Nadi\Vendor\Twig\Node\Expression\NameExpression;
 use Dreitier\Nadi\Vendor\Twig\Node\Expression\TestExpression;
@@ -40,15 +42,24 @@ use Dreitier\Nadi\Vendor\Twig\TwigTest;
  */
 class DefinedTest extends TestExpression
 {
+    /**
+     * @param AbstractExpression $node
+     */
     #[FirstClassTwigCallableReady]
     public function __construct(Node $node, TwigTest|string $name, ?Node $arguments, int $lineno)
     {
+        if (!$node instanceof AbstractExpression) {
+            trigger_deprecation('twig/twig', '3.15', 'Not passing a "%s" instance to the "node" argument of "%s" is deprecated ("%s" given).', AbstractExpression::class, static::class, \get_class($node));
+        }
+
         if ($node instanceof NameExpression) {
             $node->setAttribute('is_defined_test', true);
         } elseif ($node instanceof GetAttrExpression) {
             $node->setAttribute('is_defined_test', true);
             $this->changeIgnoreStrictCheck($node);
         } elseif ($node instanceof BlockReferenceExpression) {
+            $node->setAttribute('is_defined_test', true);
+        } elseif ($node instanceof MacroReferenceExpression) {
             $node->setAttribute('is_defined_test', true);
         } elseif ($node instanceof FunctionExpression && 'constant' === $node->getAttribute('name')) {
             $node->setAttribute('is_defined_test', true);

@@ -3,7 +3,7 @@
 Plugin Name: Next Active Directory Integration
 Plugin URI: https://www.active-directory-wp.com
 Description: Enterprise-ready solution to authenticate, authorize and synchronize your Active Directory users to WordPress. Next Active Directory Authentication supports NTLM and Kerberos for Single Sign On.
-Version: 3.1.7
+Version: 3.1.8
 Author: active-directory-wp.com
 Author URI: https://active-directory-wp.com
 Text Domain: next-active-directory-integration
@@ -45,6 +45,9 @@ register_activation_hook(__FILE__, array($adiPlugin, 'activation'));
 register_uninstall_hook(__FILE__, array(\Dreitier\Nadi\Init::class /* static */, 'uninstall'));
 
 add_action('plugins_loaded', 'next_ad_int_angular_ajax_params_to_post');
+
+// #204: register `init` hook to make loading the textdomain possible
+add_action('init', array($adiPlugin, '_init'));
 
 // register any hooks after the plug-in has been activated e.g. to display notices for a migration of options
 add_action('admin_init', array($adiPlugin, 'postActivation'));

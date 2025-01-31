@@ -9,18 +9,21 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 28-October-2024 using Strauss.
+ * Modified by __root__ on 31-January-2025 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
 namespace Dreitier\Nadi\Vendor\Twig\Node\Expression;
 
 use Dreitier\Nadi\Vendor\Twig\Compiler;
+use Dreitier\Nadi\Vendor\Twig\Node\Expression\Ternary\ConditionalTernary;
 
-class ConditionalExpression extends AbstractExpression
+class ConditionalExpression extends AbstractExpression implements OperatorEscapeInterface
 {
     public function __construct(AbstractExpression $expr1, AbstractExpression $expr2, AbstractExpression $expr3, int $lineno)
     {
+        trigger_deprecation('twig/twig', '3.17', \sprintf('"%s" is deprecated; use "%s" instead.', __CLASS__, ConditionalTernary::class));
+
         parent::__construct(['expr1' => $expr1, 'expr2' => $expr2, 'expr3' => $expr3], [], $lineno);
     }
 
@@ -44,5 +47,10 @@ class ConditionalExpression extends AbstractExpression
                 ->subcompile($this->getNode('expr3'))
                 ->raw('))');
         }
+    }
+
+    public function getOperandNamesToEscape(): array
+    {
+        return ['expr2', 'expr3'];
     }
 }

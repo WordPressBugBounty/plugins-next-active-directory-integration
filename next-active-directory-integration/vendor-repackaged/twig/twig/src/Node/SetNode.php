@@ -8,7 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 28-October-2024 using Strauss.
+ * Modified by __root__ on 31-January-2025 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
@@ -36,8 +36,15 @@ class SetNode extends Node implements NodeCaptureInterface
         $safe = false;
         if ($capture) {
             $safe = true;
-            if ($values instanceof TextNode) {
+            // Node::class === get_class($values) should be removed in Twig 4.0
+            if (($values instanceof Nodes || Node::class === \get_class($values)) && !\count($values)) {
+                $values = new ConstantExpression('', $values->getTemplateLine());
+                $capture = false;
+            } elseif ($values instanceof TextNode) {
                 $values = new ConstantExpression($values->getAttribute('data'), $values->getTemplateLine());
+                $capture = false;
+            } elseif ($values instanceof PrintNode && $values->getNode('expr') instanceof ConstantExpression) {
+                $values = $values->getNode('expr');
                 $capture = false;
             } else {
                 $values = new CaptureNode($values, $values->getTemplateLine());
@@ -81,11 +88,23 @@ class SetNode extends Node implements NodeCaptureInterface
                 $compiler->raw(']');
             } else {
                 if ($this->getAttribute('safe')) {
-                    $compiler
-                        ->raw("('' === \$tmp = ")
-                        ->subcompile($this->getNode('values'))
-                        ->raw(") ? '' : new Markup(\$tmp, \$this->env->getCharset())")
-                    ;
+                    if ($this->getNode('values') instanceof ConstantExpression) {
+                        if ('' === $this->getNode('values')->getAttribute('value')) {
+                            $compiler->raw('""');
+                        } else {
+                            $compiler
+                                ->raw('new Markup(')
+                                ->subcompile($this->getNode('values'))
+                                ->raw(', $this->env->getCharset())')
+                            ;
+                        }
+                    } else {
+                        $compiler
+                            ->raw("('' === \$tmp = ")
+                            ->subcompile($this->getNode('values'))
+                            ->raw(") ? '' : new Markup(\$tmp, \$this->env->getCharset())")
+                        ;
+                    }
                 } else {
                     $compiler->subcompile($this->getNode('values'));
                 }

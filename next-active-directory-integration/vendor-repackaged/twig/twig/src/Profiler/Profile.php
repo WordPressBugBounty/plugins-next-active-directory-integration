@@ -8,7 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 28-October-2024 using Strauss.
+ * Modified by __root__ on 31-January-2025 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
@@ -100,6 +100,22 @@ final class Profile implements \IteratorAggregate, \Serializable
         }
 
         return isset($this->ends['wt']) && isset($this->starts['wt']) ? $this->ends['wt'] - $this->starts['wt'] : 0;
+    }
+
+    /**
+     * Returns the start time in microseconds.
+     */
+    public function getStartTime(): float
+    {
+        return $this->starts['wt'] ?? 0.0;
+    }
+
+    /**
+     * Returns the end time in microseconds.
+     */
+    public function getEndTime(): float
+    {
+        return $this->ends['wt'] ?? 0.0;
     }
 
     /**

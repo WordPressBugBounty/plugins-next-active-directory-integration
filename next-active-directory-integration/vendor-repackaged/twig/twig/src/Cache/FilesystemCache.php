@@ -8,7 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 28-October-2024 using Strauss.
+ * Modified by __root__ on 31-January-2025 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
@@ -19,7 +19,7 @@ namespace Dreitier\Nadi\Vendor\Twig\Cache;
  *
  * @author Andrew Tch <andrew@noop.lv>
  */
-class FilesystemCache implements CacheInterface
+class FilesystemCache implements CacheInterface, RemovableCacheInterface
 {
     public const FORCE_BYTECODE_INVALIDATION = 1;
 
@@ -77,6 +77,14 @@ class FilesystemCache implements CacheInterface
         }
 
         throw new \RuntimeException(\sprintf('Failed to write cache file "%s".', $key));
+    }
+
+    public function remove(string $name, string $cls): void
+    {
+        $key = $this->generateKey($name, $cls);
+        if (!@unlink($key) && file_exists($key)) {
+            throw new \RuntimeException(\sprintf('Failed to delete cache file "%s".', $key));
+        }
     }
 
     public function getTimestamp(string $key): int

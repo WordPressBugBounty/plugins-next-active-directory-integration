@@ -8,7 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 28-October-2024 using Strauss.
+ * Modified by __root__ on 31-January-2025 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
@@ -27,6 +27,9 @@ class FilesystemLoader implements LoaderInterface
     /** Identifier of the main namespace. */
     public const MAIN_NAMESPACE = '__main__';
 
+    /**
+     * @var array<string, list<string>>
+     */
     protected $paths = [];
     protected $cache = [];
     protected $errorCache = [];
@@ -34,8 +37,8 @@ class FilesystemLoader implements LoaderInterface
     private $rootPath;
 
     /**
-     * @param string|array $paths    A path or an array of paths where to look for templates
-     * @param string|null  $rootPath The root path common to all relative paths (null for getcwd())
+     * @param string|string[] $paths    A path or an array of paths where to look for templates
+     * @param string|null     $rootPath The root path common to all relative paths (null for getcwd())
      */
     public function __construct($paths = [], ?string $rootPath = null)
     {
@@ -51,6 +54,8 @@ class FilesystemLoader implements LoaderInterface
 
     /**
      * Returns the paths to the templates.
+     *
+     * @return list<string>
      */
     public function getPaths(string $namespace = self::MAIN_NAMESPACE): array
     {
@@ -61,6 +66,8 @@ class FilesystemLoader implements LoaderInterface
      * Returns the path namespaces.
      *
      * The main namespace is always defined.
+     *
+     * @return list<string>
      */
     public function getNamespaces(): array
     {
@@ -68,7 +75,7 @@ class FilesystemLoader implements LoaderInterface
     }
 
     /**
-     * @param string|array $paths A path or an array of paths where to look for templates
+     * @param string|string[] $paths A path or an array of paths where to look for templates
      */
     public function setPaths($paths, string $namespace = self::MAIN_NAMESPACE): void
     {

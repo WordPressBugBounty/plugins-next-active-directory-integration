@@ -8,7 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 28-October-2024 using Strauss.
+ * Modified by __root__ on 31-January-2025 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
@@ -18,14 +18,17 @@ use Dreitier\Nadi\Vendor\Twig\Environment;
 use Dreitier\Nadi\Vendor\Twig\Node\CheckSecurityCallNode;
 use Dreitier\Nadi\Vendor\Twig\Node\CheckSecurityNode;
 use Dreitier\Nadi\Vendor\Twig\Node\CheckToStringNode;
+use Dreitier\Nadi\Vendor\Twig\Node\Expression\ArrayExpression;
 use Dreitier\Nadi\Vendor\Twig\Node\Expression\Binary\ConcatBinary;
 use Dreitier\Nadi\Vendor\Twig\Node\Expression\Binary\RangeBinary;
 use Dreitier\Nadi\Vendor\Twig\Node\Expression\FilterExpression;
 use Dreitier\Nadi\Vendor\Twig\Node\Expression\FunctionExpression;
 use Dreitier\Nadi\Vendor\Twig\Node\Expression\GetAttrExpression;
 use Dreitier\Nadi\Vendor\Twig\Node\Expression\NameExpression;
+use Dreitier\Nadi\Vendor\Twig\Node\Expression\Unary\SpreadUnary;
 use Dreitier\Nadi\Vendor\Twig\Node\ModuleNode;
 use Dreitier\Nadi\Vendor\Twig\Node\Node;
+use Dreitier\Nadi\Vendor\Twig\Node\Nodes;
 use Dreitier\Nadi\Vendor\Twig\Node\PrintNode;
 use Dreitier\Nadi\Vendor\Twig\Node\SetNode;
 
@@ -108,8 +111,8 @@ final class SandboxNodeVisitor implements NodeVisitorInterface
         if ($node instanceof ModuleNode) {
             $this->inAModule = false;
 
-            $node->setNode('constructor_end', new Node([new CheckSecurityCallNode(), $node->getNode('constructor_end')]));
-            $node->setNode('class_end', new Node([new CheckSecurityNode($this->filters, $this->tags, $this->functions), $node->getNode('class_end')]));
+            $node->setNode('constructor_end', new Nodes([new CheckSecurityCallNode(), $node->getNode('constructor_end')]));
+            $node->setNode('class_end', new Nodes([new CheckSecurityNode($this->filters, $this->tags, $this->functions), $node->getNode('class_end')]));
         } elseif ($this->inAModule) {
             if ($node instanceof PrintNode || $node instanceof SetNode) {
                 $this->needsToStringWrap = false;
@@ -123,7 +126,18 @@ final class SandboxNodeVisitor implements NodeVisitorInterface
     {
         $expr = $node->getNode($name);
         if (($expr instanceof NameExpression || $expr instanceof GetAttrExpression) && !$expr->isGenerator()) {
-            $node->setNode($name, new CheckToStringNode($expr));
+            // Simplify in 4.0 as the spread attribute has been removed there
+            $new = new CheckToStringNode($expr);
+            if ($expr->hasAttribute('spread')) {
+                $new->setAttribute('spread', $expr->getAttribute('spread'));
+            }
+            $node->setNode($name, $new);
+        } elseif ($expr instanceof SpreadUnary) {
+            $this->wrapNode($expr, 'node');
+        } elseif ($expr instanceof ArrayExpression) {
+            foreach ($expr as $name => $_) {
+                $this->wrapNode($expr, $name);
+            }
         }
     }
 

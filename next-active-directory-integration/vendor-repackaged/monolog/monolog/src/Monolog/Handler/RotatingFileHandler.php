@@ -2,7 +2,7 @@
 /**
  * @license MIT
  *
- * Modified by __root__ on 28-October-2024 using Strauss.
+ * Modified by __root__ on 31-January-2025 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */ declare(strict_types=1);
 
@@ -118,17 +118,22 @@ class RotatingFileHandler extends StreamHandler
      */
     protected function write(array $record): void
     {
-        // on the first record written, if the log is new, we should rotate (once per day)
+        // on the first record written, if the log is new, we rotate (once per day) after the log has been written so that the new file exists
         if (null === $this->mustRotate) {
             $this->mustRotate = null === $this->url || !file_exists($this->url);
         }
 
+        // if the next rotation is expired, then we rotate immediately
         if ($this->nextRotation <= $record['datetime']) {
             $this->mustRotate = true;
-            $this->close();
+            $this->close(); // triggers rotation
         }
 
         parent::write($record);
+
+        if ($this->mustRotate) {
+            $this->close(); // triggers rotation
+        }
     }
 
     /**
@@ -139,6 +144,8 @@ class RotatingFileHandler extends StreamHandler
         // update filename
         $this->url = $this->getTimedFilename();
         $this->nextRotation = new \DateTimeImmutable('tomorrow');
+
+        $this->mustRotate = false;
 
         // skip GC of old logs if files are unlimited
         if (0 === $this->maxFiles) {
@@ -172,8 +179,6 @@ class RotatingFileHandler extends StreamHandler
                 restore_error_handler();
             }
         }
-
-        $this->mustRotate = false;
     }
 
     protected function getTimedFilename(): string

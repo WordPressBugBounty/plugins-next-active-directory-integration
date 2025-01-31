@@ -9,7 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 28-October-2024 using Strauss.
+ * Modified by __root__ on 31-January-2025 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
@@ -45,13 +45,12 @@ class IncludeNode extends Node implements NodeOutputInterface
             $template = $compiler->getVarName();
 
             $compiler
-                ->write(\sprintf("$%s = null;\n", $template))
                 ->write("try {\n")
                 ->indent()
                 ->write(\sprintf('$%s = ', $template))
             ;
 
-            $this->addGetTemplate($compiler);
+            $this->addGetTemplate($compiler, $template);
 
             $compiler
                 ->raw(";\n")
@@ -59,6 +58,7 @@ class IncludeNode extends Node implements NodeOutputInterface
                 ->write("} catch (LoaderError \$e) {\n")
                 ->indent()
                 ->write("// ignore missing template\n")
+                ->write(\sprintf("\$$template = null;\n", $template))
                 ->outdent()
                 ->write("}\n")
                 ->write(\sprintf("if ($%s) {\n", $template))
@@ -81,10 +81,10 @@ class IncludeNode extends Node implements NodeOutputInterface
         }
     }
 
-    protected function addGetTemplate(Compiler $compiler)
+    protected function addGetTemplate(Compiler $compiler/* , string $template = '' */)
     {
         $compiler
-            ->write('$this->loadTemplate(')
+            ->raw('$this->loadTemplate(')
             ->subcompile($this->getNode('expr'))
             ->raw(', ')
             ->repr($this->getTemplateName())

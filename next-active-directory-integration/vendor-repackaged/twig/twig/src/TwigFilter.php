@@ -8,7 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 28-October-2024 using Strauss.
+ * Modified by __root__ on 31-January-2025 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
@@ -57,12 +57,12 @@ final class TwigFilter extends AbstractTwigCallable
             return $this->options['is_safe_callback']($filterArgs);
         }
 
-        return null;
+        return [];
     }
 
-    public function getPreservesSafety(): ?array
+    public function getPreservesSafety(): array
     {
-        return $this->options['preserves_safety'];
+        return $this->options['preserves_safety'] ?? [];
     }
 
     public function getPreEscape(): ?string

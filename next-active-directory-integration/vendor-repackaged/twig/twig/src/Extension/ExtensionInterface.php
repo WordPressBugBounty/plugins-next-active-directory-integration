@@ -8,15 +8,17 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 28-October-2024 using Strauss.
+ * Modified by __root__ on 31-January-2025 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
 namespace Dreitier\Nadi\Vendor\Twig\Extension;
 
 use Dreitier\Nadi\Vendor\Twig\ExpressionParser;
-use Dreitier\Nadi\Vendor\Twig\Node\Expression\AbstractExpression;
+use Dreitier\Nadi\Vendor\Twig\Node\Expression\Binary\AbstractBinary;
+use Dreitier\Nadi\Vendor\Twig\Node\Expression\Unary\AbstractUnary;
 use Dreitier\Nadi\Vendor\Twig\NodeVisitor\NodeVisitorInterface;
+use Dreitier\Nadi\Vendor\Twig\OperatorPrecedenceChange;
 use Dreitier\Nadi\Vendor\Twig\TokenParser\TokenParserInterface;
 use Dreitier\Nadi\Vendor\Twig\TwigFilter;
 use Dreitier\Nadi\Vendor\Twig\TwigFunction;
@@ -70,8 +72,8 @@ interface ExtensionInterface
      * @return array<array> First array of unary operators, second array of binary operators
      *
      * @psalm-return array{
-     *     array<string, array{precedence: int, class: class-string<AbstractExpression>}>,
-     *     array<string, array{precedence: int, class?: class-string<AbstractExpression>, associativity: ExpressionParser::OPERATOR_*}>
+     *     array<string, array{precedence: int, precedence_change?: OperatorPrecedenceChange, class: class-string<AbstractUnary>}>,
+     *     array<string, array{precedence: int, precedence_change?: OperatorPrecedenceChange, class?: class-string<AbstractBinary>, associativity: ExpressionParser::OPERATOR_*}>
      * }
      */
     public function getOperators();

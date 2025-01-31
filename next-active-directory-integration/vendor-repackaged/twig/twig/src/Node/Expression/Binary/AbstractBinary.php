@@ -9,7 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 28-October-2024 using Strauss.
+ * Modified by __root__ on 31-January-2025 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
@@ -21,8 +21,19 @@ use Dreitier\Nadi\Vendor\Twig\Node\Node;
 
 abstract class AbstractBinary extends AbstractExpression
 {
+    /**
+     * @param AbstractExpression $left
+     * @param AbstractExpression $right
+     */
     public function __construct(Node $left, Node $right, int $lineno)
     {
+        if (!$left instanceof AbstractExpression) {
+            trigger_deprecation('twig/twig', '3.15', 'Not passing a "%s" instance to the "left" argument of "%s" is deprecated ("%s" given).', AbstractExpression::class, static::class, \get_class($left));
+        }
+        if (!$right instanceof AbstractExpression) {
+            trigger_deprecation('twig/twig', '3.15', 'Not passing a "%s" instance to the "right" argument of "%s" is deprecated ("%s" given).', AbstractExpression::class, static::class, \get_class($right));
+        }
+
         parent::__construct(['left' => $left, 'right' => $right], [], $lineno);
     }
 

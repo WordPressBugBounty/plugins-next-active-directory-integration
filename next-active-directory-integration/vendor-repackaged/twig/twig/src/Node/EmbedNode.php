@@ -8,7 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 28-October-2024 using Strauss.
+ * Modified by __root__ on 31-January-2025 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
@@ -36,10 +36,10 @@ class EmbedNode extends IncludeNode
         $this->setAttribute('index', $index);
     }
 
-    protected function addGetTemplate(Compiler $compiler): void
+    protected function addGetTemplate(Compiler $compiler, string $template = ''): void
     {
         $compiler
-            ->write('$this->loadTemplate(')
+            ->raw('$this->loadTemplate(')
             ->string($this->getAttribute('name'))
             ->raw(', ')
             ->repr($this->getTemplateName())
@@ -49,5 +49,11 @@ class EmbedNode extends IncludeNode
             ->string($this->getAttribute('index'))
             ->raw(')')
         ;
+        if ($this->getAttribute('ignore_missing')) {
+            $compiler
+                ->raw(";\n")
+                ->write(\sprintf("\$%s->getParent(\$context);\n", $template))
+            ;
+        }
     }
 }

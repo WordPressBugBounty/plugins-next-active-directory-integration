@@ -9,7 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 28-October-2024 using Strauss.
+ * Modified by __root__ on 31-January-2025 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
@@ -25,8 +25,15 @@ use Dreitier\Nadi\Vendor\Twig\Node\Node;
  */
 class BlockReferenceExpression extends AbstractExpression
 {
+    /**
+     * @param AbstractExpression $name
+     */
     public function __construct(Node $name, ?Node $template, int $lineno)
     {
+        if (!$name instanceof AbstractExpression) {
+            trigger_deprecation('twig/twig', '3.15', 'Not passing a "%s" instance to the "node" argument of "%s" is deprecated ("%s" given).', AbstractExpression::class, static::class, \get_class($name));
+        }
+
         $nodes = ['name' => $name];
         if (null !== $template) {
             $nodes['template'] = $template;

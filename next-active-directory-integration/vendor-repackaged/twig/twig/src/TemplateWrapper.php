@@ -8,7 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 28-October-2024 using Strauss.
+ * Modified by __root__ on 31-January-2025 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
@@ -31,6 +31,22 @@ final class TemplateWrapper
         private Environment $env,
         private Template $template,
     ) {
+    }
+
+    /**
+     * @return iterable<scalar|\Stringable|null>
+     */
+    public function stream(array $context = []): iterable
+    {
+        yield from $this->template->yield($context);
+    }
+
+    /**
+     * @return iterable<scalar|\Stringable|null>
+     */
+    public function streamBlock(string $name, array $context = []): iterable
+    {
+        yield from $this->template->yieldBlock($name, $context);
     }
 
     public function render(array $context = []): string

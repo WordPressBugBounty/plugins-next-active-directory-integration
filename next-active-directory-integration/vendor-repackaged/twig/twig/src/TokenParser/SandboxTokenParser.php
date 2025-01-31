@@ -8,7 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 28-October-2024 using Strauss.
+ * Modified by __root__ on 31-January-2025 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
@@ -25,7 +25,7 @@ use Dreitier\Nadi\Vendor\Twig\Token;
  * Marks a section of a template as untrusted code that must be evaluated in the sandbox mode.
  *
  *    {% sandbox %}
- *        {% include 'user.html' %}
+ *        {% include 'user.html.twig' %}
  *    {% endsandbox %}
  *
  * @see https://twig.symfony.com/doc/api.html#sandbox-extension for details
@@ -37,6 +37,8 @@ final class SandboxTokenParser extends AbstractTokenParser
     public function parse(Token $token): Node
     {
         $stream = $this->parser->getStream();
+        trigger_deprecation('twig/twig', '3.15', \sprintf('The "sandbox" tag is deprecated in "%s" at line %d.', $stream->getSourceContext()->getName(), $token->getLine()));
+
         $stream->expect(Token::BLOCK_END_TYPE);
         $body = $this->parser->subparse([$this, 'decideBlockEnd'], true);
         $stream->expect(Token::BLOCK_END_TYPE);

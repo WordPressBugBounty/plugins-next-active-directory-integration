@@ -8,7 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 28-October-2024 using Strauss.
+ * Modified by __root__ on 31-January-2025 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
@@ -55,6 +55,9 @@ final class EscaperRuntime implements RuntimeExtensionInterface
         return $this->escapers;
     }
 
+    /**
+     * @param array<class-string<\Stringable>, string[]> $safeClasses
+     */
     public function setSafeClasses(array $safeClasses = [])
     {
         $this->safeClasses = [];
@@ -64,6 +67,10 @@ final class EscaperRuntime implements RuntimeExtensionInterface
         }
     }
 
+    /**
+     * @param class-string<\Stringable> $class
+     * @param string[]                  $strategies
+     */
     public function addSafeClass(string $class, array $strategies)
     {
         $class = ltrim($class, '\\');

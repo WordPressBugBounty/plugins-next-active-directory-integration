@@ -9,13 +9,13 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 28-October-2024 using Strauss.
+ * Modified by __root__ on 31-January-2025 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
 namespace Dreitier\Nadi\Vendor\Twig\TokenParser;
 
-use Dreitier\Nadi\Vendor\Twig\Node\Expression\AssignNameExpression;
+use Dreitier\Nadi\Vendor\Twig\Node\Expression\Variable\AssignContextVariable;
 use Dreitier\Nadi\Vendor\Twig\Node\ForNode;
 use Dreitier\Nadi\Vendor\Twig\Node\Node;
 use Dreitier\Nadi\Vendor\Twig\Token;
@@ -53,13 +53,13 @@ final class ForTokenParser extends AbstractTokenParser
 
         if (\count($targets) > 1) {
             $keyTarget = $targets->getNode('0');
-            $keyTarget = new AssignNameExpression($keyTarget->getAttribute('name'), $keyTarget->getTemplateLine());
+            $keyTarget = new AssignContextVariable($keyTarget->getAttribute('name'), $keyTarget->getTemplateLine());
             $valueTarget = $targets->getNode('1');
         } else {
-            $keyTarget = new AssignNameExpression('_key', $lineno);
+            $keyTarget = new AssignContextVariable('_key', $lineno);
             $valueTarget = $targets->getNode('0');
         }
-        $valueTarget = new AssignNameExpression($valueTarget->getAttribute('name'), $valueTarget->getTemplateLine());
+        $valueTarget = new AssignContextVariable($valueTarget->getAttribute('name'), $valueTarget->getTemplateLine());
 
         return new ForNode($keyTarget, $valueTarget, $seq, null, $body, $else, $lineno);
     }

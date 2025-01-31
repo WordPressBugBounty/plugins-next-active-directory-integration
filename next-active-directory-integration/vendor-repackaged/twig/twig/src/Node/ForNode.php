@@ -9,7 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 28-October-2024 using Strauss.
+ * Modified by __root__ on 31-January-2025 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
@@ -18,7 +18,7 @@ namespace Dreitier\Nadi\Vendor\Twig\Node;
 use Dreitier\Nadi\Vendor\Twig\Attribute\YieldReady;
 use Dreitier\Nadi\Vendor\Twig\Compiler;
 use Dreitier\Nadi\Vendor\Twig\Node\Expression\AbstractExpression;
-use Dreitier\Nadi\Vendor\Twig\Node\Expression\AssignNameExpression;
+use Dreitier\Nadi\Vendor\Twig\Node\Expression\Variable\AssignContextVariable;
 
 /**
  * Represents a for node.
@@ -30,9 +30,9 @@ class ForNode extends Node
 {
     private $loop;
 
-    public function __construct(AssignNameExpression $keyTarget, AssignNameExpression $valueTarget, AbstractExpression $seq, ?Node $ifexpr, Node $body, ?Node $else, int $lineno)
+    public function __construct(AssignContextVariable $keyTarget, AssignContextVariable $valueTarget, AbstractExpression $seq, ?Node $ifexpr, Node $body, ?Node $else, int $lineno)
     {
-        $body = new Node([$body, $this->loop = new ForLoopNode($lineno)]);
+        $body = new Nodes([$body, $this->loop = new ForLoopNode($lineno)]);
 
         $nodes = ['key_target' => $keyTarget, 'value_target' => $valueTarget, 'seq' => $seq, 'body' => $body];
         if (null !== $else) {

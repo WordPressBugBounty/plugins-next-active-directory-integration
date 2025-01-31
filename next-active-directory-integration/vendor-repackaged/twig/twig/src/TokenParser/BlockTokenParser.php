@@ -9,7 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 28-October-2024 using Strauss.
+ * Modified by __root__ on 31-January-2025 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
@@ -18,7 +18,9 @@ namespace Dreitier\Nadi\Vendor\Twig\TokenParser;
 use Dreitier\Nadi\Vendor\Twig\Error\SyntaxError;
 use Dreitier\Nadi\Vendor\Twig\Node\BlockNode;
 use Dreitier\Nadi\Vendor\Twig\Node\BlockReferenceNode;
+use Dreitier\Nadi\Vendor\Twig\Node\EmptyNode;
 use Dreitier\Nadi\Vendor\Twig\Node\Node;
+use Dreitier\Nadi\Vendor\Twig\Node\Nodes;
 use Dreitier\Nadi\Vendor\Twig\Node\PrintNode;
 use Dreitier\Nadi\Vendor\Twig\Token;
 
@@ -39,7 +41,7 @@ final class BlockTokenParser extends AbstractTokenParser
         $lineno = $token->getLine();
         $stream = $this->parser->getStream();
         $name = $stream->expect(Token::NAME_TYPE)->getValue();
-        $this->parser->setBlock($name, $block = new BlockNode($name, new Node([]), $lineno));
+        $this->parser->setBlock($name, $block = new BlockNode($name, new EmptyNode(), $lineno));
         $this->parser->pushLocalScope();
         $this->parser->pushBlockStack($name);
 
@@ -53,7 +55,7 @@ final class BlockTokenParser extends AbstractTokenParser
                 }
             }
         } else {
-            $body = new Node([
+            $body = new Nodes([
                 new PrintNode($this->parser->getExpressionParser()->parseExpression(), $lineno),
             ]);
         }

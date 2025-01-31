@@ -9,13 +9,14 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 28-October-2024 using Strauss.
+ * Modified by __root__ on 31-January-2025 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
 namespace Dreitier\Nadi\Vendor\Twig\Node\Expression;
 
 use Dreitier\Nadi\Vendor\Twig\Compiler;
+use Dreitier\Nadi\Vendor\Twig\Node\Expression\Variable\ContextVariable;
 
 class NameExpression extends AbstractExpression
 {
@@ -27,6 +28,10 @@ class NameExpression extends AbstractExpression
 
     public function __construct(string $name, int $lineno)
     {
+        if (self::class === static::class) {
+            trigger_deprecation('twig/twig', '3.15', 'The "%s" class is deprecated, use "%s" instead.', self::class, ContextVariable::class);
+        }
+
         parent::__construct([], ['name' => $name, 'is_defined_test' => false, 'ignore_strict_check' => false, 'always_defined' => false], $lineno);
     }
 

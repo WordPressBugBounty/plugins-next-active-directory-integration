@@ -8,7 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 28-October-2024 using Strauss.
+ * Modified by __root__ on 31-January-2025 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
@@ -18,7 +18,6 @@ use Dreitier\Nadi\Vendor\Twig\Error\RuntimeError;
 use Dreitier\Nadi\Vendor\Twig\Extension\ExtensionInterface;
 use Dreitier\Nadi\Vendor\Twig\Extension\GlobalsInterface;
 use Dreitier\Nadi\Vendor\Twig\Extension\StagingExtension;
-use Dreitier\Nadi\Vendor\Twig\Node\Expression\AbstractExpression;
 use Dreitier\Nadi\Vendor\Twig\Node\Expression\Binary\AbstractBinary;
 use Dreitier\Nadi\Vendor\Twig\Node\Expression\Unary\AbstractUnary;
 use Dreitier\Nadi\Vendor\Twig\NodeVisitor\NodeVisitorInterface;
@@ -49,11 +48,11 @@ final class ExtensionSet
     private $functions;
     /** @var array<string, TwigFunction> */
     private $dynamicFunctions;
-    /** @var array<string, array{precedence: int, class: class-string<AbstractExpression>}> */
+    /** @var array<string, array{precedence: int, precedence_change?: OperatorPrecedenceChange, class: class-string<AbstractUnary>}> */
     private $unaryOperators;
-    /** @var array<string, array{precedence: int, class?: class-string<AbstractExpression>, associativity: ExpressionParser::OPERATOR_*}> */
+    /** @var array<string, array{precedence: int, precedence_change?: OperatorPrecedenceChange, class?: class-string<AbstractBinary>, associativity: ExpressionParser::OPERATOR_*}> */
     private $binaryOperators;
-    /** @var array<string, mixed> */
+    /** @var array<string, mixed>|null */
     private $globals;
     private $functionCallbacks = [];
     private $filterCallbacks = [];
@@ -390,7 +389,7 @@ final class ExtensionSet
     }
 
     /**
-     * @return array<string, array{precedence: int, class: class-string<AbstractExpression>}>
+     * @return array<string, array{precedence: int, precedence_change?: OperatorPrecedenceChange, class: class-string<AbstractUnary>}>
      */
     public function getUnaryOperators(): array
     {
@@ -402,7 +401,7 @@ final class ExtensionSet
     }
 
     /**
-     * @return array<string, array{precedence: int, class?: class-string<AbstractExpression>, associativity: ExpressionParser::OPERATOR_*}>
+     * @return array<string, array{precedence: int, precedence_change?: OperatorPrecedenceChange, class?: class-string<AbstractBinary>, associativity: ExpressionParser::OPERATOR_*}>
      */
     public function getBinaryOperators(): array
     {
@@ -477,7 +476,7 @@ final class ExtensionSet
         // operators
         if ($operators = $extension->getOperators()) {
             if (!\is_array($operators)) {
-                throw new \InvalidArgumentException(\sprintf('"%s::getOperators()" must return an array with operators, got "%s".', \get_class($extension), \is_object($operators) ? \get_class($operators) : \gettype($operators).(\is_resource($operators) ? '' : '#'.$operators)));
+                throw new \InvalidArgumentException(\sprintf('"%s::getOperators()" must return an array with operators, got "%s".', \get_class($extension), get_debug_type($operators).(\is_resource($operators) ? '' : '#'.$operators)));
             }
 
             if (2 !== \count($operators)) {
