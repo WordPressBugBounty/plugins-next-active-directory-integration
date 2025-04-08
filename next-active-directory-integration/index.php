@@ -3,7 +3,7 @@
 Plugin Name: Next Active Directory Integration
 Plugin URI: https://www.active-directory-wp.com
 Description: Enterprise-ready solution to authenticate, authorize and synchronize your Active Directory users to WordPress. Next Active Directory Authentication supports NTLM and Kerberos for Single Sign On.
-Version: 3.1.8
+Version: 3.1.9
 Author: active-directory-wp.com
 Author URI: https://active-directory-wp.com
 Text Domain: next-active-directory-integration
