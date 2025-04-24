@@ -3,7 +3,7 @@ Contributors: dreitier,dreitierci,schakko,neosit
 Tags: authentication, active directory, ldap, windows, sso
 Requires at least: 5.6
 Tested up to: 6.8
-Stable tag: 3.1.9
+Stable tag: 3.1.10
 License: GPLv3
 Donate link: https://active-directory-wp.com
 
@@ -125,6 +125,9 @@ It is __not__ possible to activate *NADI* for a site inside a network.
 == Changelog ==
 
 For detailed information you can visit the official [GitHub repository of Next Active Directory Integration](https://github.com/NeosIT/active-directory-integration2)
+
+= 3.1.10 =
+* FIXED: Lazy loading of option descriptions/title to prevent E_NOTICEs in WordPress 6.8 with debugging enabled (#209)
 
 = 3.1.9 =
 * CHANGED: WordPress 6.8 compatibility has been checked
