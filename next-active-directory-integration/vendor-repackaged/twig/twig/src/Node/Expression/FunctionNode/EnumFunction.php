@@ -2,7 +2,7 @@
 /**
  * @license BSD-3-Clause
  *
- * Modified by __root__ on 24-April-2025 using Strauss.
+ * Modified by __root__ on 30-June-2025 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
