@@ -8,7 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 30-June-2025 using Strauss.
+ * Modified by __root__ on 28-November-2025 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
@@ -27,7 +27,7 @@ final class DoTokenParser extends AbstractTokenParser
 {
     public function parse(Token $token): Node
     {
-        $expr = $this->parser->getExpressionParser()->parseExpression();
+        $expr = $this->parser->parseExpression();
 
         $this->parser->getStream()->expect(Token::BLOCK_END_TYPE);
 

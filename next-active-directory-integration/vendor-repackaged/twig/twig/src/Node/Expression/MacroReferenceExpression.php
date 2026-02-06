@@ -8,7 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 30-June-2025 using Strauss.
+ * Modified by __root__ on 28-November-2025 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
@@ -22,16 +22,19 @@ use Dreitier\Nadi\Vendor\Twig\Node\Expression\Variable\TemplateVariable;
  *
  * @author Fabien Potencier <fabien@symfony.com>
  */
-class MacroReferenceExpression extends AbstractExpression
+class MacroReferenceExpression extends AbstractExpression implements SupportDefinedTestInterface
 {
+    use SupportDefinedTestDeprecationTrait;
+    use SupportDefinedTestTrait;
+
     public function __construct(TemplateVariable $template, string $name, AbstractExpression $arguments, int $lineno)
     {
-        parent::__construct(['template' => $template, 'arguments' => $arguments], ['name' => $name, 'is_defined_test' => false], $lineno);
+        parent::__construct(['template' => $template, 'arguments' => $arguments], ['name' => $name], $lineno);
     }
 
     public function compile(Compiler $compiler): void
     {
-        if ($this->getAttribute('is_defined_test')) {
+        if ($this->definedTest) {
             $compiler
                 ->subcompile($this->getNode('template'))
                 ->raw('->hasMacro(')

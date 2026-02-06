@@ -2,8 +2,8 @@
 Contributors: dreitier,dreitierci,schakko,neosit
 Tags: authentication, active directory, ldap, windows, sso
 Requires at least: 5.6
-Tested up to: 6.8
-Stable tag: 3.2.0
+Tested up to: 6.9
+Stable tag: 3.2.1
 License: GPLv3
 Donate link: https://active-directory-wp.com
 
@@ -125,6 +125,10 @@ It is __not__ possible to activate *NADI* for a site inside a network.
 == Changelog ==
 
 For detailed information you can visit the official [GitHub repository of Next Active Directory Integration](https://github.com/NeosIT/active-directory-integration2)
+
+= 3.2.1 =
+* CHANGED: WordPress 6.9 compatibility has been checked
+* CHANGED: Update to twig/twig:3.22.0 to fix security issues with Twig <= 3.19.x
 
 = 3.2.0 =
 * FIXED: Restore paginated user sync support for PHP >= 8.0 (#211)

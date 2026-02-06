@@ -8,7 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 30-June-2025 using Strauss.
+ * Modified by __root__ on 28-November-2025 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
@@ -157,10 +157,13 @@ final class EscaperNodeVisitor implements NodeVisitorInterface
             $safe = $this->safeAnalysis->getSafe($expression);
         }
 
-        return \in_array($type, $safe) || \in_array('all', $safe);
+        return \in_array($type, $safe, true) || \in_array('all', $safe, true);
     }
 
-    private function needEscaping()
+    /**
+     * @return string|false
+     */
+    private function needEscaping(): string|bool
     {
         if (\count($this->statusStack)) {
             return $this->statusStack[\count($this->statusStack) - 1];

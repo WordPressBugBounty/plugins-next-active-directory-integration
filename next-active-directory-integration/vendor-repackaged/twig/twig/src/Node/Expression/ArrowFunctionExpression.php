@@ -8,13 +8,16 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 30-June-2025 using Strauss.
+ * Modified by __root__ on 28-November-2025 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
 namespace Dreitier\Nadi\Vendor\Twig\Node\Expression;
 
 use Dreitier\Nadi\Vendor\Twig\Compiler;
+use Dreitier\Nadi\Vendor\Twig\Error\SyntaxError;
+use Dreitier\Nadi\Vendor\Twig\Node\Expression\Variable\AssignContextVariable;
+use Dreitier\Nadi\Vendor\Twig\Node\Expression\Variable\ContextVariable;
 use Dreitier\Nadi\Vendor\Twig\Node\Node;
 
 /**
@@ -26,6 +29,14 @@ class ArrowFunctionExpression extends AbstractExpression
 {
     public function __construct(AbstractExpression $expr, Node $names, $lineno)
     {
+        if (!$names instanceof ListExpression && !$names instanceof ContextVariable) {
+            throw new SyntaxError('The arrow function argument must be a list of variables or a single variable.', $names->getTemplateLine(), $names->getSourceContext());
+        }
+
+        if ($names instanceof ContextVariable) {
+            $names = new ListExpression([new AssignContextVariable($names->getAttribute('name'), $names->getTemplateLine())], $lineno);
+        }
+
         parent::__construct(['expr' => $expr, 'names' => $names], [], $lineno);
     }
 
@@ -34,19 +45,7 @@ class ArrowFunctionExpression extends AbstractExpression
         $compiler
             ->addDebugInfo($this)
             ->raw('function (')
-        ;
-        foreach ($this->getNode('names') as $i => $name) {
-            if ($i) {
-                $compiler->raw(', ');
-            }
-
-            $compiler
-                ->raw('$__')
-                ->raw($name->getAttribute('name'))
-                ->raw('__')
-            ;
-        }
-        $compiler
+            ->subcompile($this->getNode('names'))
             ->raw(') use ($context, $macros) { ')
         ;
         foreach ($this->getNode('names') as $name) {

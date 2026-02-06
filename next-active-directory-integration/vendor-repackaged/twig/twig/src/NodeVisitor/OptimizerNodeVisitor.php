@@ -8,7 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 30-June-2025 using Strauss.
+ * Modified by __root__ on 28-November-2025 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
@@ -20,8 +20,8 @@ use Dreitier\Nadi\Vendor\Twig\Node\Expression\BlockReferenceExpression;
 use Dreitier\Nadi\Vendor\Twig\Node\Expression\ConstantExpression;
 use Dreitier\Nadi\Vendor\Twig\Node\Expression\FunctionExpression;
 use Dreitier\Nadi\Vendor\Twig\Node\Expression\GetAttrExpression;
-use Dreitier\Nadi\Vendor\Twig\Node\Expression\NameExpression;
 use Dreitier\Nadi\Vendor\Twig\Node\Expression\ParentExpression;
+use Dreitier\Nadi\Vendor\Twig\Node\Expression\Variable\ContextVariable;
 use Dreitier\Nadi\Vendor\Twig\Node\ForNode;
 use Dreitier\Nadi\Vendor\Twig\Node\IncludeNode;
 use Dreitier\Nadi\Vendor\Twig\Node\Node;
@@ -140,13 +140,13 @@ final class OptimizerNodeVisitor implements NodeVisitorInterface
         // when do we need to add the loop variable back?
 
         // the loop variable is referenced for the current loop
-        elseif ($node instanceof NameExpression && 'loop' === $node->getAttribute('name')) {
+        elseif ($node instanceof ContextVariable && 'loop' === $node->getAttribute('name')) {
             $node->setAttribute('always_defined', true);
             $this->addLoopToCurrent();
         }
 
         // optimize access to loop targets
-        elseif ($node instanceof NameExpression && \in_array($node->getAttribute('name'), $this->loopsTargets)) {
+        elseif ($node instanceof ContextVariable && \in_array($node->getAttribute('name'), $this->loopsTargets, true)) {
             $node->setAttribute('always_defined', true);
         }
 
@@ -176,7 +176,7 @@ final class OptimizerNodeVisitor implements NodeVisitorInterface
                 || 'parent' === $node->getNode('attribute')->getAttribute('value')
             )
             && (true === $this->loops[0]->getAttribute('with_loop')
-             || ($node->getNode('node') instanceof NameExpression
+             || ($node->getNode('node') instanceof ContextVariable
                  && 'loop' === $node->getNode('node')->getAttribute('name')
              )
             )

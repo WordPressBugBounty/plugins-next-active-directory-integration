@@ -8,7 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 30-June-2025 using Strauss.
+ * Modified by __root__ on 28-November-2025 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
@@ -20,8 +20,11 @@ use Dreitier\Nadi\Vendor\Twig\Node\NameDeprecation;
 use Dreitier\Nadi\Vendor\Twig\Node\Node;
 use Dreitier\Nadi\Vendor\Twig\TwigFunction;
 
-class FunctionExpression extends CallExpression
+class FunctionExpression extends CallExpression implements SupportDefinedTestInterface
 {
+    use SupportDefinedTestDeprecationTrait;
+    use SupportDefinedTestTrait;
+
     #[FirstClassTwigCallableReady]
     public function __construct(TwigFunction|string $function, Node $arguments, int $lineno)
     {
@@ -32,7 +35,7 @@ class FunctionExpression extends CallExpression
             trigger_deprecation('twig/twig', '3.12', 'Not passing an instance of "TwigFunction" when creating a "%s" function of type "%s" is deprecated.', $name, static::class);
         }
 
-        parent::__construct(['arguments' => $arguments], ['name' => $name, 'type' => 'function', 'is_defined_test' => false], $lineno);
+        parent::__construct(['arguments' => $arguments], ['name' => $name, 'type' => 'function'], $lineno);
 
         if ($function instanceof TwigFunction) {
             $this->setAttribute('dreitier_nadi__twig_callable', $function);
@@ -47,6 +50,16 @@ class FunctionExpression extends CallExpression
         $this->deprecateAttribute('dynamic_name', new NameDeprecation('twig/twig', '3.12'));
     }
 
+    public function enableDefinedTest(): void
+    {
+        if ('constant' === $this->getAttribute('name')) {
+            $this->definedTest = true;
+        }
+    }
+
+    /**
+     * @return void
+     */
     public function compile(Compiler $compiler)
     {
         $name = $this->getAttribute('name');
@@ -62,7 +75,7 @@ class FunctionExpression extends CallExpression
             $this->setAttribute('dreitier_nadi__twig_callable', $compiler->getEnvironment()->getFunction($name));
         }
 
-        if ('constant' === $name && $this->getAttribute('is_defined_test')) {
+        if ('constant' === $name && $this->isDefinedTestEnabled()) {
             $this->getNode('arguments')->setNode('checkDefined', new ConstantExpression(true, $this->getTemplateLine()));
         }
 

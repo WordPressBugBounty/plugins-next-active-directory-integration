@@ -9,7 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 30-June-2025 using Strauss.
+ * Modified by __root__ on 28-November-2025 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
@@ -18,8 +18,9 @@ namespace Dreitier\Nadi\Vendor\Twig\Node\Expression;
 use Dreitier\Nadi\Vendor\Twig\Compiler;
 use Dreitier\Nadi\Vendor\Twig\Error\SyntaxError;
 use Dreitier\Nadi\Vendor\Twig\Node\Expression\Variable\AssignContextVariable;
+use Dreitier\Nadi\Vendor\Twig\Node\Expression\Variable\ContextVariable;
 
-class AssignNameExpression extends NameExpression
+class AssignNameExpression extends ContextVariable
 {
     public function __construct(string $name, int $lineno)
     {
@@ -28,7 +29,7 @@ class AssignNameExpression extends NameExpression
         }
 
         // All names supported by ExpressionParser::parsePrimaryExpression() should be excluded
-        if (\in_array(strtolower($name), ['true', 'false', 'none', 'null'])) {
+        if (\in_array(strtolower($name), ['true', 'false', 'none', 'null'], true)) {
             throw new SyntaxError(\sprintf('You cannot assign a value to "%s".', $name), $lineno);
         }
 

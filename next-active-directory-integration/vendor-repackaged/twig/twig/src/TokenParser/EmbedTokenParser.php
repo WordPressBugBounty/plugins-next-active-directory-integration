@@ -8,7 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 30-June-2025 using Strauss.
+ * Modified by __root__ on 28-November-2025 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
@@ -16,7 +16,7 @@ namespace Dreitier\Nadi\Vendor\Twig\TokenParser;
 
 use Dreitier\Nadi\Vendor\Twig\Node\EmbedNode;
 use Dreitier\Nadi\Vendor\Twig\Node\Expression\ConstantExpression;
-use Dreitier\Nadi\Vendor\Twig\Node\Expression\NameExpression;
+use Dreitier\Nadi\Vendor\Twig\Node\Expression\Variable\ContextVariable;
 use Dreitier\Nadi\Vendor\Twig\Node\Node;
 use Dreitier\Nadi\Vendor\Twig\Token;
 
@@ -31,14 +31,14 @@ final class EmbedTokenParser extends IncludeTokenParser
     {
         $stream = $this->parser->getStream();
 
-        $parent = $this->parser->getExpressionParser()->parseExpression();
+        $parent = $this->parser->parseExpression();
 
         [$variables, $only, $ignoreMissing] = $this->parseArguments();
 
         $parentToken = $fakeParentToken = new Token(Token::STRING_TYPE, '__parent__', $token->getLine());
         if ($parent instanceof ConstantExpression) {
             $parentToken = new Token(Token::STRING_TYPE, $parent->getAttribute('value'), $token->getLine());
-        } elseif ($parent instanceof NameExpression) {
+        } elseif ($parent instanceof ContextVariable) {
             $parentToken = new Token(Token::NAME_TYPE, $parent->getAttribute('name'), $token->getLine());
         }
 

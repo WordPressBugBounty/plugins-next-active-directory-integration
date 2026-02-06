@@ -8,7 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 30-June-2025 using Strauss.
+ * Modified by __root__ on 28-November-2025 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
@@ -43,7 +43,7 @@ EOF;
         return $str;
     }
 
-    private function dumpChildren(string $parent, Profile $profile, &$data)
+    private function dumpChildren(string $parent, Profile $profile, &$data): void
     {
         foreach ($profile as $p) {
             if ($p->isTemplate()) {
@@ -56,7 +56,7 @@ EOF;
         }
     }
 
-    private function dumpProfile(string $edge, Profile $profile, &$data)
+    private function dumpProfile(string $edge, Profile $profile, &$data): void
     {
         if (isset($data[$edge])) {
             ++$data[$edge]['ct'];

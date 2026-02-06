@@ -9,7 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 30-June-2025 using Strauss.
+ * Modified by __root__ on 28-November-2025 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
@@ -18,8 +18,11 @@ namespace Dreitier\Nadi\Vendor\Twig\Node\Expression;
 use Dreitier\Nadi\Vendor\Twig\Compiler;
 use Dreitier\Nadi\Vendor\Twig\Node\Expression\Variable\ContextVariable;
 
-class NameExpression extends AbstractExpression
+class NameExpression extends AbstractExpression implements SupportDefinedTestInterface
 {
+    use SupportDefinedTestDeprecationTrait;
+    use SupportDefinedTestTrait;
+
     private $specialVars = [
         '_self' => '$this->getTemplateName()',
         '_context' => '$context',
@@ -32,7 +35,7 @@ class NameExpression extends AbstractExpression
             trigger_deprecation('twig/twig', '3.15', 'The "%s" class is deprecated, use "%s" instead.', self::class, ContextVariable::class);
         }
 
-        parent::__construct([], ['name' => $name, 'is_defined_test' => false, 'ignore_strict_check' => false, 'always_defined' => false], $lineno);
+        parent::__construct([], ['name' => $name, 'ignore_strict_check' => false, 'always_defined' => false], $lineno);
     }
 
     public function compile(Compiler $compiler): void
@@ -41,8 +44,8 @@ class NameExpression extends AbstractExpression
 
         $compiler->addDebugInfo($this);
 
-        if ($this->getAttribute('is_defined_test')) {
-            if (isset($this->specialVars[$name])) {
+        if ($this->definedTest) {
+            if (isset($this->specialVars[$name]) || $this->getAttribute('always_defined')) {
                 $compiler->repr(true);
             } elseif (\PHP_VERSION_ID >= 70400) {
                 $compiler
@@ -110,6 +113,6 @@ class NameExpression extends AbstractExpression
     {
         trigger_deprecation('twig/twig', '3.11', 'The "%s()" method is deprecated and will be removed in Twig 4.0.', __METHOD__);
 
-        return !$this->isSpecial() && !$this->getAttribute('is_defined_test');
+        return !isset($this->specialVars[$this->getAttribute('name')]) && !$this->definedTest;
     }
 }

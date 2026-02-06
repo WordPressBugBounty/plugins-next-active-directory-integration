@@ -9,7 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 30-June-2025 using Strauss.
+ * Modified by __root__ on 28-November-2025 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
@@ -33,6 +33,16 @@ class ForNode extends Node
     public function __construct(AssignContextVariable $keyTarget, AssignContextVariable $valueTarget, AbstractExpression $seq, ?Node $ifexpr, Node $body, ?Node $else, int $lineno)
     {
         $body = new Nodes([$body, $this->loop = new ForLoopNode($lineno)]);
+
+        if (null !== $ifexpr) {
+            trigger_deprecation('twig/twig', '3.19', \sprintf('Passing not-null to the "ifexpr" argument of the "%s" constructor is deprecated.', static::class));
+        }
+
+        if (null !== $else && !$else instanceof ForElseNode) {
+            trigger_deprecation('twig/twig', '3.19', \sprintf('Not passing an instance of "%s" to the "else" argument of the "%s" constructor is deprecated.', ForElseNode::class, static::class));
+
+            $else = new ForElseNode($else, $else->getTemplateLine());
+        }
 
         $nodes = ['key_target' => $keyTarget, 'value_target' => $valueTarget, 'seq' => $seq, 'body' => $body];
         if (null !== $else) {
@@ -92,13 +102,7 @@ class ForNode extends Node
         ;
 
         if ($this->hasNode('else')) {
-            $compiler
-                ->write("if (!\$context['_iterated']) {\n")
-                ->indent()
-                ->subcompile($this->getNode('else'))
-                ->outdent()
-                ->write("}\n")
-            ;
+            $compiler->subcompile($this->getNode('else'));
         }
 
         $compiler->write("\$_parent = \$context['_parent'];\n");

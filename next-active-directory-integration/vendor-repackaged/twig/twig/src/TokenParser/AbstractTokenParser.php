@@ -8,13 +8,17 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 30-June-2025 using Strauss.
+ * Modified by __root__ on 28-November-2025 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
 namespace Dreitier\Nadi\Vendor\Twig\TokenParser;
 
+use Dreitier\Nadi\Vendor\Twig\Lexer;
+use Dreitier\Nadi\Vendor\Twig\Node\Expression\Variable\AssignContextVariable;
+use Dreitier\Nadi\Vendor\Twig\Node\Nodes;
 use Dreitier\Nadi\Vendor\Twig\Parser;
+use Dreitier\Nadi\Vendor\Twig\Token;
 
 /**
  * Base class for all token parsers.
@@ -31,5 +35,30 @@ abstract class AbstractTokenParser implements TokenParserInterface
     public function setParser(Parser $parser): void
     {
         $this->parser = $parser;
+    }
+
+    /**
+     * Parses an assignment expression like "a, b".
+     */
+    protected function parseAssignmentExpression(): Nodes
+    {
+        $stream = $this->parser->getStream();
+        $targets = [];
+        while (true) {
+            $token = $stream->getCurrent();
+            if ($stream->test(Token::OPERATOR_TYPE) && preg_match(Lexer::REGEX_NAME, $token->getValue())) {
+                // in this context, string operators are variable names
+                $stream->next();
+            } else {
+                $stream->expect(Token::NAME_TYPE, null, 'Only variables can be assigned to');
+            }
+            $targets[] = new AssignContextVariable($token->getValue(), $token->getLine());
+
+            if (!$stream->nextIf(Token::PUNCTUATION_TYPE, ',')) {
+                break;
+            }
+        }
+
+        return new Nodes($targets);
     }
 }

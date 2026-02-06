@@ -9,7 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 30-June-2025 using Strauss.
+ * Modified by __root__ on 28-November-2025 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
@@ -17,6 +17,9 @@ namespace Dreitier\Nadi\Vendor\Twig\Node;
 
 use Dreitier\Nadi\Vendor\Twig\Attribute\YieldReady;
 use Dreitier\Nadi\Vendor\Twig\Compiler;
+use Dreitier\Nadi\Vendor\Twig\Node\Expression\ReturnPrimitiveTypeInterface;
+use Dreitier\Nadi\Vendor\Twig\Node\Expression\Test\TrueTest;
+use Dreitier\Nadi\Vendor\Twig\TwigTest;
 
 /**
  * Represents an if node.
@@ -28,6 +31,12 @@ class IfNode extends Node
 {
     public function __construct(Node $tests, ?Node $else, int $lineno)
     {
+        for ($i = 0, $count = \count($tests); $i < $count; $i += 2) {
+            $test = $tests->getNode((string) $i);
+            if (!$test instanceof ReturnPrimitiveTypeInterface) {
+                $tests->setNode($i, new TrueTest($test, new TwigTest('true'), null, $test->getTemplateLine()));
+            }
+        }
         $nodes = ['tests' => $tests];
         if (null !== $else) {
             $nodes['else'] = $else;

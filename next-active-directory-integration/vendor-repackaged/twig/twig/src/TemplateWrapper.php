@@ -8,7 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 30-June-2025 using Strauss.
+ * Modified by __root__ on 28-November-2025 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
@@ -54,6 +54,9 @@ final class TemplateWrapper
         return $this->template->render($context);
     }
 
+    /**
+     * @return void
+     */
     public function display(array $context = [])
     {
         // using func_get_args() allows to not expose the blocks argument
@@ -79,6 +82,9 @@ final class TemplateWrapper
         return $this->template->renderBlock($name, $context + $this->env->getGlobals());
     }
 
+    /**
+     * @return void
+     */
     public function displayBlock(string $name, array $context = [])
     {
         $context += $this->env->getGlobals();

@@ -8,7 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 30-June-2025 using Strauss.
+ * Modified by __root__ on 28-November-2025 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
@@ -21,8 +21,8 @@ namespace Dreitier\Nadi\Vendor\Twig\Sandbox;
  */
 final class SecurityNotAllowedPropertyError extends SecurityError
 {
-    private $className;
-    private $propertyName;
+    private string $className;
+    private string $propertyName;
 
     public function __construct(string $message, string $className, string $propertyName)
     {
@@ -36,7 +36,7 @@ final class SecurityNotAllowedPropertyError extends SecurityError
         return $this->className;
     }
 
-    public function getPropertyName()
+    public function getPropertyName(): string
     {
         return $this->propertyName;
     }

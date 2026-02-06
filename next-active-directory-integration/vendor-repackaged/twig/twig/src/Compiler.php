@@ -9,7 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 30-June-2025 using Strauss.
+ * Modified by __root__ on 28-November-2025 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
@@ -77,7 +77,7 @@ class Compiler
             $node->compile($this);
 
             if ($this->didUseEcho) {
-                trigger_deprecation('twig/twig', '3.9', 'Using "%s" is deprecated, use "yield" instead in "%s", then flag the class with #[\Dreitier\Nadi\Vendor\Twig\Attribute\YieldReady].', $this->didUseEcho, \get_class($node));
+                trigger_deprecation('twig/twig', '3.9', 'Using "%s" is deprecated, use "yield" instead in "%s", then flag the class with #[\Dreitier\Nadi\Vendor\Twig\Attribute\YieldReady].', $this->didUseEcho, $node::class);
             }
 
             return $this;
@@ -102,7 +102,7 @@ class Compiler
             $node->compile($this);
 
             if ($this->didUseEcho) {
-                trigger_deprecation('twig/twig', '3.9', 'Using "%s" is deprecated, use "yield" instead in "%s", then flag the class with #[\Dreitier\Nadi\Vendor\Twig\Attribute\YieldReady].', $this->didUseEcho, \get_class($node));
+                trigger_deprecation('twig/twig', '3.9', 'Using "%s" is deprecated, use "yield" instead in "%s", then flag the class with #[\Dreitier\Nadi\Vendor\Twig\Attribute\YieldReady].', $this->didUseEcho, $node::class);
             }
 
             return $this;

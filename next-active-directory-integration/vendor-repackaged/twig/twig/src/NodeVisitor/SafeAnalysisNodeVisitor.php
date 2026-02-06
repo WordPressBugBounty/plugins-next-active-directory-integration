@@ -8,7 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 30-June-2025 using Strauss.
+ * Modified by __root__ on 28-November-2025 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
@@ -22,9 +22,9 @@ use Dreitier\Nadi\Vendor\Twig\Node\Expression\FunctionExpression;
 use Dreitier\Nadi\Vendor\Twig\Node\Expression\GetAttrExpression;
 use Dreitier\Nadi\Vendor\Twig\Node\Expression\MacroReferenceExpression;
 use Dreitier\Nadi\Vendor\Twig\Node\Expression\MethodCallExpression;
-use Dreitier\Nadi\Vendor\Twig\Node\Expression\NameExpression;
 use Dreitier\Nadi\Vendor\Twig\Node\Expression\OperatorEscapeInterface;
 use Dreitier\Nadi\Vendor\Twig\Node\Expression\ParentExpression;
+use Dreitier\Nadi\Vendor\Twig\Node\Expression\Variable\ContextVariable;
 use Dreitier\Nadi\Vendor\Twig\Node\Node;
 
 /**
@@ -45,7 +45,7 @@ final class SafeAnalysisNodeVisitor implements NodeVisitorInterface
      */
     public function getSafe(Node $node)
     {
-        $hash = spl_object_hash($node);
+        $hash = spl_object_id($node);
         if (!isset($this->data[$hash])) {
             return [];
         }
@@ -55,7 +55,7 @@ final class SafeAnalysisNodeVisitor implements NodeVisitorInterface
                 continue;
             }
 
-            if (\in_array('html_attr', $bucket['value'])) {
+            if (\in_array('html_attr', $bucket['value'], true)) {
                 $bucket['value'][] = 'html';
             }
 
@@ -67,7 +67,7 @@ final class SafeAnalysisNodeVisitor implements NodeVisitorInterface
 
     private function setSafe(Node $node, array $safe): void
     {
-        $hash = spl_object_hash($node);
+        $hash = spl_object_id($node);
         if (isset($this->data[$hash])) {
             foreach ($this->data[$hash] as &$bucket) {
                 if ($bucket['key'] === $node) {
@@ -149,9 +149,9 @@ final class SafeAnalysisNodeVisitor implements NodeVisitorInterface
         } elseif ($node instanceof MethodCallExpression || $node instanceof MacroReferenceExpression) {
             // all macro calls are safe
             $this->setSafe($node, ['all']);
-        } elseif ($node instanceof GetAttrExpression && $node->getNode('node') instanceof NameExpression) {
+        } elseif ($node instanceof GetAttrExpression && $node->getNode('node') instanceof ContextVariable) {
             $name = $node->getNode('node')->getAttribute('name');
-            if (\in_array($name, $this->safeVars)) {
+            if (\in_array($name, $this->safeVars, true)) {
                 $this->setSafe($node, ['all']);
             }
         }
@@ -165,11 +165,11 @@ final class SafeAnalysisNodeVisitor implements NodeVisitorInterface
             return [];
         }
 
-        if (\in_array('all', $a)) {
+        if (\in_array('all', $a, true)) {
             return $b;
         }
 
-        if (\in_array('all', $b)) {
+        if (\in_array('all', $b, true)) {
             return $a;
         }
 

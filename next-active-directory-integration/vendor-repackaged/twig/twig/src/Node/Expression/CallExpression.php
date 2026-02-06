@@ -8,7 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 30-June-2025 using Strauss.
+ * Modified by __root__ on 28-November-2025 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
@@ -29,6 +29,9 @@ abstract class CallExpression extends AbstractExpression
 {
     private $reflector = null;
 
+    /**
+     * @return void
+     */
     protected function compileCallable(Compiler $compiler)
     {
         $twigCallable = $this->getTwigCallable();

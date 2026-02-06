@@ -8,38 +8,30 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 30-June-2025 using Strauss.
+ * Modified by __root__ on 28-November-2025 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
 namespace Dreitier\Nadi\Vendor\Twig;
 
+use Dreitier\Nadi\Vendor\Twig\ExpressionParser\PrecedenceChange;
+
 /**
- * Represents a precedence change for an operator.
+ * Represents a precedence change.
  *
  * @author Fabien Potencier <fabien@symfony.com>
+ *
+ * @deprecated since Twig 1.20 Use Twig\ExpressionParser\PrecedenceChange instead
  */
-class OperatorPrecedenceChange
+class OperatorPrecedenceChange extends PrecedenceChange
 {
     public function __construct(
         private string $package,
         private string $version,
         private int $newPrecedence,
     ) {
-    }
+        trigger_deprecation('twig/twig', '3.21', 'The "%s" class is deprecated since Twig 3.21. Use "%s" instead.', self::class, PrecedenceChange::class);
 
-    public function getPackage(): string
-    {
-        return $this->package;
-    }
-
-    public function getVersion(): string
-    {
-        return $this->version;
-    }
-
-    public function getNewPrecedence(): int
-    {
-        return $this->newPrecedence;
+        parent::__construct($package, $version, $newPrecedence);
     }
 }

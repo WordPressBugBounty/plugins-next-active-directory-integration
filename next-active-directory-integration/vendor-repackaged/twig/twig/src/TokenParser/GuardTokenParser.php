@@ -8,7 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 30-June-2025 using Strauss.
+ * Modified by __root__ on 28-November-2025 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
@@ -29,15 +29,21 @@ final class GuardTokenParser extends AbstractTokenParser
     {
         $stream = $this->parser->getStream();
         $typeToken = $stream->expect(Token::NAME_TYPE);
-        if (!\in_array($typeToken->getValue(), ['function', 'filter', 'test'])) {
+        if (!\in_array($typeToken->getValue(), ['function', 'filter', 'test'], true)) {
             throw new SyntaxError(\sprintf('Supported guard types are function, filter and test, "%s" given.', $typeToken->getValue()), $typeToken->getLine(), $stream->getSourceContext());
         }
         $method = 'get'.$typeToken->getValue();
 
         $nameToken = $stream->expect(Token::NAME_TYPE);
+        $name = $nameToken->getValue();
+        if ('test' === $typeToken->getValue() && $stream->test(Token::NAME_TYPE)) {
+            // try 2-words tests
+            $name .= ' '.$stream->getCurrent()->getValue();
+            $stream->next();
+        }
 
         try {
-            $exists = null !== $this->parser->getEnvironment()->$method($nameToken->getValue());
+            $exists = null !== $this->parser->getEnvironment()->$method($name);
         } catch (SyntaxError) {
             $exists = false;
         }

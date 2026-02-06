@@ -8,7 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 30-June-2025 using Strauss.
+ * Modified by __root__ on 28-November-2025 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
@@ -17,11 +17,18 @@ namespace Dreitier\Nadi\Vendor\Twig\Node\Expression\Ternary;
 use Dreitier\Nadi\Vendor\Twig\Compiler;
 use Dreitier\Nadi\Vendor\Twig\Node\Expression\AbstractExpression;
 use Dreitier\Nadi\Vendor\Twig\Node\Expression\OperatorEscapeInterface;
+use Dreitier\Nadi\Vendor\Twig\Node\Expression\ReturnPrimitiveTypeInterface;
+use Dreitier\Nadi\Vendor\Twig\Node\Expression\Test\TrueTest;
+use Dreitier\Nadi\Vendor\Twig\TwigTest;
 
 final class ConditionalTernary extends AbstractExpression implements OperatorEscapeInterface
 {
     public function __construct(AbstractExpression $test, AbstractExpression $left, AbstractExpression $right, int $lineno)
     {
+        if (!$test instanceof ReturnPrimitiveTypeInterface) {
+            $test = new TrueTest($test, new TwigTest('true'), null, $test->getTemplateLine());
+        }
+
         parent::__construct(['test' => $test, 'left' => $left, 'right' => $right], [], $lineno);
     }
 

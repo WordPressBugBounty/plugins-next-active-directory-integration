@@ -1,8 +1,14 @@
 <?php
-/**
- * @license BSD-3-Clause
+
+/*
+ * This file is part of Twig.
  *
- * Modified by __root__ on 30-June-2025 using Strauss.
+ * (c) Fabien Potencier
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ *
+ * Modified by __root__ on 28-November-2025 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
@@ -27,6 +33,9 @@ class TypesNode extends Node
         parent::__construct([], ['mapping' => $types], $lineno);
     }
 
+    /**
+     * @return void
+     */
     public function compile(Compiler $compiler)
     {
         // Don't compile anything.

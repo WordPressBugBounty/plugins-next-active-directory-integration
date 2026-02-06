@@ -8,17 +8,18 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 30-June-2025 using Strauss.
+ * Modified by __root__ on 28-November-2025 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
 namespace Dreitier\Nadi\Vendor\Twig\Extension;
 
 use Dreitier\Nadi\Vendor\Twig\ExpressionParser;
+use Dreitier\Nadi\Vendor\Twig\ExpressionParser\ExpressionParserInterface;
+use Dreitier\Nadi\Vendor\Twig\ExpressionParser\PrecedenceChange;
 use Dreitier\Nadi\Vendor\Twig\Node\Expression\Binary\AbstractBinary;
 use Dreitier\Nadi\Vendor\Twig\Node\Expression\Unary\AbstractUnary;
 use Dreitier\Nadi\Vendor\Twig\NodeVisitor\NodeVisitorInterface;
-use Dreitier\Nadi\Vendor\Twig\OperatorPrecedenceChange;
 use Dreitier\Nadi\Vendor\Twig\TokenParser\TokenParserInterface;
 use Dreitier\Nadi\Vendor\Twig\TwigFilter;
 use Dreitier\Nadi\Vendor\Twig\TwigFunction;
@@ -28,6 +29,8 @@ use Dreitier\Nadi\Vendor\Twig\TwigTest;
  * Interface implemented by extension classes.
  *
  * @author Fabien Potencier <fabien@symfony.com>
+ *
+ * @method array<ExpressionParserInterface> getExpressionParsers()
  */
 interface ExtensionInterface
 {
@@ -69,11 +72,11 @@ interface ExtensionInterface
     /**
      * Returns a list of operators to add to the existing list.
      *
-     * @return array<array> First array of unary operators, second array of binary operators
+     * @return array<array>
      *
      * @psalm-return array{
-     *     array<string, array{precedence: int, precedence_change?: OperatorPrecedenceChange, class: class-string<AbstractUnary>}>,
-     *     array<string, array{precedence: int, precedence_change?: OperatorPrecedenceChange, class?: class-string<AbstractBinary>, associativity: ExpressionParser::OPERATOR_*}>
+     *     array<string, array{precedence: int, precedence_change?: PrecedenceChange, class: class-string<AbstractUnary>}>,
+     *     array<string, array{precedence: int, precedence_change?: PrecedenceChange, class?: class-string<AbstractBinary>, associativity: ExpressionParser::OPERATOR_*}>
      * }
      */
     public function getOperators();

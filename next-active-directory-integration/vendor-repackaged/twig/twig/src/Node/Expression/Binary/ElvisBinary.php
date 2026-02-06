@@ -8,7 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 30-June-2025 using Strauss.
+ * Modified by __root__ on 28-November-2025 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
@@ -17,10 +17,15 @@ namespace Dreitier\Nadi\Vendor\Twig\Node\Expression\Binary;
 use Dreitier\Nadi\Vendor\Twig\Compiler;
 use Dreitier\Nadi\Vendor\Twig\Node\Expression\AbstractExpression;
 use Dreitier\Nadi\Vendor\Twig\Node\Expression\OperatorEscapeInterface;
+use Dreitier\Nadi\Vendor\Twig\Node\Node;
 
 final class ElvisBinary extends AbstractBinary implements OperatorEscapeInterface
 {
-    public function __construct(AbstractExpression $left, AbstractExpression $right, int $lineno)
+    /**
+     * @param AbstractExpression $left
+     * @param AbstractExpression $right
+     */
+    public function __construct(Node $left, Node $right, int $lineno)
     {
         parent::__construct($left, $right, $lineno);
 

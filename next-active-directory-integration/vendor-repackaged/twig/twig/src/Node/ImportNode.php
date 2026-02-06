@@ -8,7 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 30-June-2025 using Strauss.
+ * Modified by __root__ on 28-November-2025 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
@@ -17,8 +17,8 @@ namespace Dreitier\Nadi\Vendor\Twig\Node;
 use Dreitier\Nadi\Vendor\Twig\Attribute\YieldReady;
 use Dreitier\Nadi\Vendor\Twig\Compiler;
 use Dreitier\Nadi\Vendor\Twig\Node\Expression\AbstractExpression;
-use Dreitier\Nadi\Vendor\Twig\Node\Expression\NameExpression;
 use Dreitier\Nadi\Vendor\Twig\Node\Expression\Variable\AssignTemplateVariable;
+use Dreitier\Nadi\Vendor\Twig\Node\Expression\Variable\ContextVariable;
 
 /**
  * Represents an import node.
@@ -47,14 +47,12 @@ class ImportNode extends Node
     {
         $compiler->subcompile($this->getNode('var'));
 
-        if ($this->getNode('expr') instanceof NameExpression && '_self' === $this->getNode('expr')->getAttribute('name')) {
+        if ($this->getNode('expr') instanceof ContextVariable && '_self' === $this->getNode('expr')->getAttribute('name')) {
             $compiler->raw('$this');
         } else {
             $compiler
-                ->raw('$this->loadTemplate(')
+                ->raw('$this->load(')
                 ->subcompile($this->getNode('expr'))
-                ->raw(', ')
-                ->repr($this->getTemplateName())
                 ->raw(', ')
                 ->repr($this->getTemplateLine())
                 ->raw(')->unwrap()')

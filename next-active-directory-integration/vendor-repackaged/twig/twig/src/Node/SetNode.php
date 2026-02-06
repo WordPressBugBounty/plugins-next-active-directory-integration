@@ -8,7 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 30-June-2025 using Strauss.
+ * Modified by __root__ on 28-November-2025 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
@@ -37,7 +37,7 @@ class SetNode extends Node implements NodeCaptureInterface
         if ($capture) {
             $safe = true;
             // Node::class === get_class($values) should be removed in Twig 4.0
-            if (($values instanceof Nodes || Node::class === \get_class($values)) && !\count($values)) {
+            if (($values instanceof Nodes || Node::class === $values::class) && !\count($values)) {
                 $values = new ConstantExpression('', $values->getTemplateLine());
                 $capture = false;
             } elseif ($values instanceof TextNode) {

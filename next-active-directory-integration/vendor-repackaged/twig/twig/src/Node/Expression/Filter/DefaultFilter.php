@@ -8,7 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 30-June-2025 using Strauss.
+ * Modified by __root__ on 28-November-2025 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
@@ -22,9 +22,9 @@ use Dreitier\Nadi\Vendor\Twig\Node\Expression\AbstractExpression;
 use Dreitier\Nadi\Vendor\Twig\Node\Expression\ConstantExpression;
 use Dreitier\Nadi\Vendor\Twig\Node\Expression\FilterExpression;
 use Dreitier\Nadi\Vendor\Twig\Node\Expression\GetAttrExpression;
-use Dreitier\Nadi\Vendor\Twig\Node\Expression\NameExpression;
 use Dreitier\Nadi\Vendor\Twig\Node\Expression\Ternary\ConditionalTernary;
 use Dreitier\Nadi\Vendor\Twig\Node\Expression\Test\DefinedTest;
+use Dreitier\Nadi\Vendor\Twig\Node\Expression\Variable\ContextVariable;
 use Dreitier\Nadi\Vendor\Twig\Node\Node;
 use Dreitier\Nadi\Vendor\Twig\TwigFilter;
 use Dreitier\Nadi\Vendor\Twig\TwigTest;
@@ -45,7 +45,7 @@ class DefaultFilter extends FilterExpression
     public function __construct(Node $node, TwigFilter|ConstantExpression $filter, Node $arguments, int $lineno)
     {
         if (!$node instanceof AbstractExpression) {
-            trigger_deprecation('twig/twig', '3.15', 'Not passing a "%s" instance to the "node" argument of "%s" is deprecated ("%s" given).', AbstractExpression::class, static::class, \get_class($node));
+            trigger_deprecation('twig/twig', '3.15', 'Not passing a "%s" instance to the "node" argument of "%s" is deprecated ("%s" given).', AbstractExpression::class, static::class, $node::class);
         }
 
         if ($filter instanceof TwigFilter) {
@@ -56,7 +56,7 @@ class DefaultFilter extends FilterExpression
             $default = new FilterExpression($node, new TwigFilter('default', [CoreExtension::class, 'default']), $arguments, $node->getTemplateLine());
         }
 
-        if ('default' === $name && ($node instanceof NameExpression || $node instanceof GetAttrExpression)) {
+        if ('default' === $name && ($node instanceof ContextVariable || $node instanceof GetAttrExpression)) {
             $test = new DefinedTest(clone $node, new TwigTest('defined'), new EmptyNode(), $node->getTemplateLine());
             $false = \count($arguments) ? $arguments->getNode('0') : new ConstantExpression('', $node->getTemplateLine());
 
