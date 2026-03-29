@@ -2,7 +2,7 @@
 /**
  * @license MIT
  *
- * Modified by __root__ on 28-November-2025 using Strauss.
+ * Modified by __root__ on 29-March-2026 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */ declare(strict_types=1);
 
@@ -239,6 +239,10 @@ class TelegramBotHandler extends AbstractProcessingHandler
 
     protected function sendCurl(string $message): void
     {
+        if ('' === trim($message)) {
+            return;
+        }
+        
         $ch = curl_init();
         $url = self::BOT_API . $this->apiKey . '/SendMessage';
         curl_setopt($ch, CURLOPT_URL, $url);

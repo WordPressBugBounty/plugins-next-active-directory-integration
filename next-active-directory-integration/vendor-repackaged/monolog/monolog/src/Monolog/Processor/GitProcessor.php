@@ -2,7 +2,7 @@
 /**
  * @license MIT
  *
- * Modified by __root__ on 28-November-2025 using Strauss.
+ * Modified by __root__ on 29-March-2026 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */ declare(strict_types=1);
 
@@ -70,7 +70,7 @@ class GitProcessor implements ProcessorInterface
             return self::$cache;
         }
 
-        $branches = `git branch -v --no-abbrev`;
+        $branches = shell_exec('git branch -v --no-abbrev');
         if ($branches && preg_match('{^\* (.+?)\s+([a-f0-9]{40})(?:\s|$)}m', $branches, $matches)) {
             return self::$cache = [
                 'branch' => $matches[1],

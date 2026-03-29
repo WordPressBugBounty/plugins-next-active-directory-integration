@@ -2,7 +2,7 @@
 /**
  * @license MIT
  *
- * Modified by __root__ on 28-November-2025 using Strauss.
+ * Modified by __root__ on 29-March-2026 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */ declare(strict_types=1);
 
@@ -173,7 +173,7 @@ class RotatingFileHandler extends StreamHandler
                 // suppress errors here as unlink() might fail if two processes
                 // are cleaning up/rotating at the same time
                 set_error_handler(function (int $errno, string $errstr, string $errfile, int $errline): bool {
-                    return false;
+                    return true;
                 });
                 unlink($file);
                 restore_error_handler();

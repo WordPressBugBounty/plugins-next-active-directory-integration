@@ -2,7 +2,7 @@
 /**
  * @license MIT
  *
- * Modified by __root__ on 28-November-2025 using Strauss.
+ * Modified by __root__ on 29-March-2026 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */ declare(strict_types=1);
 
@@ -69,7 +69,7 @@ class MercurialProcessor implements ProcessorInterface
             return self::$cache;
         }
 
-        $result = explode(' ', trim(`hg id -nb`));
+        $result = explode(' ', trim((string) shell_exec('hg id -nb')));
 
         if (count($result) >= 3) {
             return self::$cache = [

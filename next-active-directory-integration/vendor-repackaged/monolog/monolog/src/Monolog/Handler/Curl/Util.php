@@ -2,7 +2,7 @@
 /**
  * @license MIT
  *
- * Modified by __root__ on 28-November-2025 using Strauss.
+ * Modified by __root__ on 29-March-2026 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */ declare(strict_types=1);
 
@@ -55,7 +55,7 @@ final class Util
                 if (false === in_array($curlErrno, self::$retriableErrorCodes, true) || !$retries) {
                     $curlError = curl_error($ch);
 
-                    if ($closeAfterDone) {
+                    if (\PHP_VERSION_ID < 80000 && $closeAfterDone) {
                         curl_close($ch);
                     }
 
@@ -65,7 +65,7 @@ final class Util
                 continue;
             }
 
-            if ($closeAfterDone) {
+            if (\PHP_VERSION_ID < 80000 && $closeAfterDone) {
                 curl_close($ch);
             }
 
