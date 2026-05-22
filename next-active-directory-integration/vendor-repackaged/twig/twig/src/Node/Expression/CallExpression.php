@@ -8,7 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 29-March-2026 using Strauss.
+ * Modified by __root__ on 22-May-2026 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
@@ -27,7 +27,7 @@ use Dreitier\Nadi\Vendor\Twig\Util\ReflectionCallable;
 
 abstract class CallExpression extends AbstractExpression
 {
-    private $reflector = null;
+    private $reflector;
 
     /**
      * @return void
@@ -100,6 +100,14 @@ abstract class CallExpression extends AbstractExpression
                 $compiler->raw(', ');
             }
             $compiler->raw('$context');
+            $first = false;
+        }
+
+        if (self::needsIsSandboxed($twigCallable)) {
+            if (!$first) {
+                $compiler->raw(', ');
+            }
+            $compiler->raw('$this->env->hasExtension(\Dreitier\Nadi\Vendor\Twig\Extension\SandboxExtension::class) && $this->env->getExtension(\Dreitier\Nadi\Vendor\Twig\Extension\SandboxExtension::class)->isSandboxed($this->source)');
             $first = false;
         }
 
@@ -216,9 +224,8 @@ abstract class CallExpression extends AbstractExpression
             } elseif ($callableParameter->isOptional()) {
                 if (!$parameters) {
                     break;
-                } else {
-                    $missingArguments[] = $name;
                 }
+                $missingArguments[] = $name;
             } else {
                 throw new SyntaxError(\sprintf('Value for argument "%s" is required for %s "%s".', $name, $callType, $callName), $this->getTemplateLine(), $this->getSourceContext());
             }
@@ -294,6 +301,9 @@ abstract class CallExpression extends AbstractExpression
         if ($twigCallable->needsContext()) {
             array_shift($parameters);
         }
+        if (self::needsIsSandboxed($twigCallable)) {
+            array_shift($parameters);
+        }
         foreach ($twigCallable->getArguments() as $argument) {
             array_shift($parameters);
         }
@@ -325,6 +335,22 @@ abstract class CallExpression extends AbstractExpression
     }
 
     /**
+     * @internal
+     *
+     * To be removed in 4.0 and replaced by $twigCallable->needsIsSandboxed().
+     */
+    public static function needsIsSandboxed(TwigCallableInterface $twigCallable): bool
+    {
+        if (method_exists($twigCallable, 'needsIsSandboxed')) {
+            return $twigCallable->needsIsSandboxed();
+        }
+
+        trigger_deprecation('twig/twig', '3.25', 'Not implementing the "needsIsSandboxed()" method in "%s" is deprecated. This method will be part of the "%s" interface in 4.0.', $twigCallable::class, TwigCallableInterface::class);
+
+        return false;
+    }
+
+    /**
      * Overrides the Twig callable based on attributes (as potentially, attributes changed between the creation and the compilation of the node).
      *
      * To be removed in 4.0 and replace by $this->getAttribute('dreitier_nadi__twig_callable').
@@ -338,6 +364,7 @@ abstract class CallExpression extends AbstractExpression
                 $this->getAttribute('name'),
                 $this->hasAttribute('callable') ? $this->getAttribute('callable') : $current->getCallable(),
                 [
+                    'needs_is_sandboxed' => $this->hasAttribute('needs_is_sandboxed') ? $this->getAttribute('needs_is_sandboxed') : self::needsIsSandboxed($current),
                     'is_variadic' => $this->hasAttribute('is_variadic') ? $this->getAttribute('is_variadic') : $current->isVariadic(),
                 ],
             ))->withDynamicArguments($this->getAttribute('name'), $this->hasAttribute('dynamic_name') ? $this->getAttribute('dynamic_name') : $current->getDynamicName(), $this->hasAttribute('arguments') ? $this->getAttribute('arguments') : $current->getArguments()),
@@ -348,6 +375,7 @@ abstract class CallExpression extends AbstractExpression
                     'needs_environment' => $this->hasAttribute('needs_environment') ? $this->getAttribute('needs_environment') : $current->needsEnvironment(),
                     'needs_context' => $this->hasAttribute('needs_context') ? $this->getAttribute('needs_context') : $current->needsContext(),
                     'needs_charset' => $this->hasAttribute('needs_charset') ? $this->getAttribute('needs_charset') : $current->needsCharset(),
+                    'needs_is_sandboxed' => $this->hasAttribute('needs_is_sandboxed') ? $this->getAttribute('needs_is_sandboxed') : self::needsIsSandboxed($current),
                     'is_variadic' => $this->hasAttribute('is_variadic') ? $this->getAttribute('is_variadic') : $current->isVariadic(),
                 ],
             ))->withDynamicArguments($this->getAttribute('name'), $this->hasAttribute('dynamic_name') ? $this->getAttribute('dynamic_name') : $current->getDynamicName(), $this->hasAttribute('arguments') ? $this->getAttribute('arguments') : $current->getArguments()),
@@ -358,6 +386,7 @@ abstract class CallExpression extends AbstractExpression
                     'needs_environment' => $this->hasAttribute('needs_environment') ? $this->getAttribute('needs_environment') : $current->needsEnvironment(),
                     'needs_context' => $this->hasAttribute('needs_context') ? $this->getAttribute('needs_context') : $current->needsContext(),
                     'needs_charset' => $this->hasAttribute('needs_charset') ? $this->getAttribute('needs_charset') : $current->needsCharset(),
+                    'needs_is_sandboxed' => $this->hasAttribute('needs_is_sandboxed') ? $this->getAttribute('needs_is_sandboxed') : self::needsIsSandboxed($current),
                     'is_variadic' => $this->hasAttribute('is_variadic') ? $this->getAttribute('is_variadic') : $current->isVariadic(),
                 ],
             ))->withDynamicArguments($this->getAttribute('name'), $this->hasAttribute('dynamic_name') ? $this->getAttribute('dynamic_name') : $current->getDynamicName(), $this->hasAttribute('arguments') ? $this->getAttribute('arguments') : $current->getArguments()),

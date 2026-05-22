@@ -8,7 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 29-March-2026 using Strauss.
+ * Modified by __root__ on 22-May-2026 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
@@ -26,7 +26,7 @@ class HasEveryBinary extends AbstractBinary implements ReturnBoolInterface
             ->subcompile($this->getNode('left'))
             ->raw(', ')
             ->subcompile($this->getNode('right'))
-            ->raw(')')
+            ->raw(', $this->env->hasExtension(\Dreitier\Nadi\Vendor\Twig\Extension\SandboxExtension::class) && $this->env->getExtension(\Dreitier\Nadi\Vendor\Twig\Extension\SandboxExtension::class)->isSandboxed($this->source))')
         ;
     }
 

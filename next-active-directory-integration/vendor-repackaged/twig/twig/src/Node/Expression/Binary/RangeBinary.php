@@ -8,16 +8,17 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 29-March-2026 using Strauss.
+ * Modified by __root__ on 22-May-2026 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
 namespace Dreitier\Nadi\Vendor\Twig\Node\Expression\Binary;
 
 use Dreitier\Nadi\Vendor\Twig\Compiler;
+use Dreitier\Nadi\Vendor\Twig\Node\CoercesChildrenToStringInterface;
 use Dreitier\Nadi\Vendor\Twig\Node\Expression\ReturnArrayInterface;
 
-class RangeBinary extends AbstractBinary implements ReturnArrayInterface
+class RangeBinary extends AbstractBinary implements ReturnArrayInterface, CoercesChildrenToStringInterface
 {
     public function compile(Compiler $compiler): void
     {
@@ -33,5 +34,10 @@ class RangeBinary extends AbstractBinary implements ReturnArrayInterface
     public function operator(Compiler $compiler): Compiler
     {
         return $compiler->raw('..');
+    }
+
+    public function getStringCoercedChildNames(): array
+    {
+        return ['left', 'right'];
     }
 }

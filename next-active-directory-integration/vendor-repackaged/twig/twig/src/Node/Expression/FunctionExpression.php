@@ -8,7 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 29-March-2026 using Strauss.
+ * Modified by __root__ on 22-May-2026 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
@@ -16,11 +16,12 @@ namespace Dreitier\Nadi\Vendor\Twig\Node\Expression;
 
 use Dreitier\Nadi\Vendor\Twig\Attribute\FirstClassTwigCallableReady;
 use Dreitier\Nadi\Vendor\Twig\Compiler;
+use Dreitier\Nadi\Vendor\Twig\Node\CoercesChildrenToStringInterface;
 use Dreitier\Nadi\Vendor\Twig\Node\NameDeprecation;
 use Dreitier\Nadi\Vendor\Twig\Node\Node;
 use Dreitier\Nadi\Vendor\Twig\TwigFunction;
 
-class FunctionExpression extends CallExpression implements SupportDefinedTestInterface
+class FunctionExpression extends CallExpression implements SupportDefinedTestInterface, CoercesChildrenToStringInterface
 {
     use SupportDefinedTestDeprecationTrait;
     use SupportDefinedTestTrait;
@@ -80,5 +81,11 @@ class FunctionExpression extends CallExpression implements SupportDefinedTestInt
         }
 
         $this->compileCallable($compiler);
+    }
+
+    public function getStringCoercedChildNames(): array
+    {
+        // a function may coerce its arguments to string (the host PHP code is opaque to Twig)
+        return ['arguments'];
     }
 }

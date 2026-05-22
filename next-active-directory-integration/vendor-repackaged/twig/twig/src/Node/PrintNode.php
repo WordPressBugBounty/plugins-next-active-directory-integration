@@ -9,7 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 29-March-2026 using Strauss.
+ * Modified by __root__ on 22-May-2026 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
@@ -25,7 +25,7 @@ use Dreitier\Nadi\Vendor\Twig\Node\Expression\AbstractExpression;
  * @author Fabien Potencier <fabien@symfony.com>
  */
 #[YieldReady]
-class PrintNode extends Node implements NodeOutputInterface
+class PrintNode extends Node implements NodeOutputInterface, CoercesChildrenToStringInterface
 {
     public function __construct(AbstractExpression $expr, int $lineno)
     {
@@ -43,5 +43,10 @@ class PrintNode extends Node implements NodeOutputInterface
             ->subcompile($expr)
             ->raw(";\n")
         ;
+    }
+
+    public function getStringCoercedChildNames(): array
+    {
+        return ['expr'];
     }
 }

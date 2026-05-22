@@ -8,7 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 29-March-2026 using Strauss.
+ * Modified by __root__ on 22-May-2026 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
@@ -36,6 +36,7 @@ final class UnaryOperatorExpressionParser extends AbstractExpressionParser imple
         private ?PrecedenceChange $precedenceChange = null,
         private ?string $description = null,
         private array $aliases = [],
+        private ?int $operandPrecedence = null,
     ) {
     }
 
@@ -44,7 +45,7 @@ final class UnaryOperatorExpressionParser extends AbstractExpressionParser imple
      */
     public function parse(Parser $parser, Token $token): AbstractExpression
     {
-        return new ($this->nodeClass)($parser->parseExpression($this->precedence), $token->getLine());
+        return new ($this->nodeClass)($parser->parseExpression($this->operandPrecedence ?? $this->precedence), $token->getLine());
     }
 
     public function getName(): string

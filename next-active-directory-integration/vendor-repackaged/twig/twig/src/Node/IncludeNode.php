@@ -9,7 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 29-March-2026 using Strauss.
+ * Modified by __root__ on 22-May-2026 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
@@ -25,7 +25,7 @@ use Dreitier\Nadi\Vendor\Twig\Node\Expression\AbstractExpression;
  * @author Fabien Potencier <fabien@symfony.com>
  */
 #[YieldReady]
-class IncludeNode extends Node implements NodeOutputInterface
+class IncludeNode extends Node implements NodeOutputInterface, CoercesChildrenToStringInterface
 {
     public function __construct(AbstractExpression $expr, ?AbstractExpression $variables, bool $only, bool $ignoreMissing, int $lineno)
     {
@@ -40,6 +40,8 @@ class IncludeNode extends Node implements NodeOutputInterface
     public function compile(Compiler $compiler): void
     {
         $compiler->addDebugInfo($this);
+
+        $sandboxed = $this->hasAttribute('sandboxed') && $this->getAttribute('sandboxed');
 
         if ($this->getAttribute('ignore_missing')) {
             $template = $compiler->getVarName();
@@ -63,8 +65,13 @@ class IncludeNode extends Node implements NodeOutputInterface
                 ->write("}\n")
                 ->write(\sprintf("if ($%s) {\n", $template))
                 ->indent()
-                ->write(\sprintf('yield from $%s->unwrap()->yield(', $template))
             ;
+
+            if ($sandboxed) {
+                $compiler->write(\sprintf("\$%s->unwrap()->checkSecurity();\n", $template));
+            }
+
+            $compiler->write(\sprintf('yield from $%s->unwrap()->yield(', $template));
 
             $this->addTemplateArguments($compiler);
             $compiler
@@ -72,6 +79,18 @@ class IncludeNode extends Node implements NodeOutputInterface
                 ->outdent()
                 ->write("}\n")
             ;
+        } elseif ($sandboxed) {
+            $template = $compiler->getVarName();
+
+            $compiler->write(\sprintf('$%s = ', $template));
+            $this->addGetTemplate($compiler);
+            $compiler
+                ->raw(";\n")
+                ->write(\sprintf("\$%s->unwrap()->checkSecurity();\n", $template))
+                ->write(\sprintf('yield from $%s->unwrap()->yield(', $template))
+            ;
+            $this->addTemplateArguments($compiler);
+            $compiler->raw(");\n");
         } else {
             $compiler->write('yield from ');
             $this->addGetTemplate($compiler);
@@ -113,5 +132,11 @@ class IncludeNode extends Node implements NodeOutputInterface
             $compiler->subcompile($this->getNode('variables'));
             $compiler->raw(')');
         }
+    }
+
+    public function getStringCoercedChildNames(): array
+    {
+        // the loader resolves the template-name expression by coercing it to a string
+        return ['expr'];
     }
 }

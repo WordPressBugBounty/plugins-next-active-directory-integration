@@ -9,7 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 29-March-2026 using Strauss.
+ * Modified by __root__ on 22-May-2026 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
@@ -146,7 +146,13 @@ class Compiler
      */
     public function string(string $value)
     {
-        $this->source .= \sprintf('"%s"', addcslashes($value, "\0\t\"\$\\"));
+        // Single quotes are encoded as \x27 (not \') as a defense-in-depth measure:
+        // it guarantees that the compiled output never contains a literal "'" derived
+        // from user input, which prevents breaking out of a surrounding single-quoted
+        // PHP context if a caller mistakenly concatenates the result into one.
+        // \' is not a recognized escape sequence in PHP double-quoted strings (the
+        // backslash would be kept literally), so \x27 is used instead.
+        $this->source .= \sprintf('"%s"', str_replace("'", '\\x27', addcslashes($value, "\0\t\"\$\\")));
 
         return $this;
     }

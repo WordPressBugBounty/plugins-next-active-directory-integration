@@ -8,7 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 29-March-2026 using Strauss.
+ * Modified by __root__ on 22-May-2026 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
@@ -33,5 +33,11 @@ class TrueTest extends TestExpression
             ->subcompile($this->getNode('node'))
             ->raw(') && $tmp instanceof Markup ? (string) $tmp : $tmp)')
         ;
+    }
+
+    public function getStringCoercedChildNames(): array
+    {
+        // the `(string)` cast only fires for Markup instances, whose __toString is always allowed
+        return [];
     }
 }

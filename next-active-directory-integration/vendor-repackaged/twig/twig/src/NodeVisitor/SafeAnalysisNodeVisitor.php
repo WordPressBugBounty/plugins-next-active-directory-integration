@@ -8,7 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 29-March-2026 using Strauss.
+ * Modified by __root__ on 22-May-2026 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
@@ -56,6 +56,11 @@ final class SafeAnalysisNodeVisitor implements NodeVisitorInterface
             }
 
             if (\in_array('html_attr', $bucket['value'], true)) {
+                $bucket['value'][] = 'html';
+                $bucket['value'][] = 'html_attr_relaxed';
+            }
+
+            if (\in_array('html_attr_relaxed', $bucket['value'], true)) {
                 $bucket['value'][] = 'html';
             }
 

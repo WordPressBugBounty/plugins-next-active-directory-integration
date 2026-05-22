@@ -8,7 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 29-March-2026 using Strauss.
+ * Modified by __root__ on 22-May-2026 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
@@ -26,7 +26,7 @@ use Dreitier\Nadi\Vendor\Twig\Node\Expression\Variable\ContextVariable;
  * @author Fabien Potencier <fabien@symfony.com>
  */
 #[YieldReady]
-class ImportNode extends Node
+class ImportNode extends Node implements CoercesChildrenToStringInterface
 {
     public function __construct(AbstractExpression $expr, AbstractExpression|AssignTemplateVariable $var, int $lineno)
     {
@@ -60,5 +60,11 @@ class ImportNode extends Node
         }
 
         $compiler->raw(";\n");
+    }
+
+    public function getStringCoercedChildNames(): array
+    {
+        // the loader resolves the template-name expression by coercing it to a string
+        return ['expr'];
     }
 }

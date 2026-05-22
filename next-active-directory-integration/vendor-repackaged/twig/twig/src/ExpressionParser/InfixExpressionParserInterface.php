@@ -8,18 +8,22 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 29-March-2026 using Strauss.
+ * Modified by __root__ on 22-May-2026 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
 namespace Dreitier\Nadi\Vendor\Twig\ExpressionParser;
 
+use Dreitier\Nadi\Vendor\Twig\Error\SyntaxError;
 use Dreitier\Nadi\Vendor\Twig\Node\Expression\AbstractExpression;
 use Dreitier\Nadi\Vendor\Twig\Parser;
 use Dreitier\Nadi\Vendor\Twig\Token;
 
 interface InfixExpressionParserInterface extends ExpressionParserInterface
 {
+    /**
+     * @throws SyntaxError
+     */
     public function parse(Parser $parser, AbstractExpression $left, Token $token): AbstractExpression;
 
     public function getAssociativity(): InfixAssociativity;

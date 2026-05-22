@@ -8,7 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 29-March-2026 using Strauss.
+ * Modified by __root__ on 22-May-2026 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
@@ -16,6 +16,7 @@ namespace Dreitier\Nadi\Vendor\Twig\ExpressionParser\Infix;
 
 use Dreitier\Nadi\Vendor\Twig\Error\SyntaxError;
 use Dreitier\Nadi\Vendor\Twig\Node\Expression\ArrayExpression;
+use Dreitier\Nadi\Vendor\Twig\Node\Expression\Binary\SetBinary;
 use Dreitier\Nadi\Vendor\Twig\Node\Expression\Unary\SpreadUnary;
 use Dreitier\Nadi\Vendor\Twig\Node\Expression\Variable\ContextVariable;
 use Dreitier\Nadi\Vendor\Twig\Node\Expression\Variable\LocalVariable;
@@ -61,7 +62,10 @@ trait ArgumentsTrait
             }
 
             $name = null;
-            if (($token = $stream->nextIf(Token::OPERATOR_TYPE, '=')) || ($token = $stream->nextIf(Token::PUNCTUATION_TYPE, ':'))) {
+            if ($value instanceof SetBinary) {
+                $name = $value->getNode('left')->getAttribute('name');
+                $value = $value->getNode('right');
+            } elseif (($token = $stream->nextIf(Token::OPERATOR_TYPE, '=')) || ($token = $stream->nextIf(Token::PUNCTUATION_TYPE, ':'))) {
                 if (!$value instanceof ContextVariable) {
                     throw new SyntaxError(\sprintf('A parameter name must be a string, "%s" given.', $value::class), $token->getLine(), $stream->getSourceContext());
                 }

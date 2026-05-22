@@ -8,7 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 29-March-2026 using Strauss.
+ * Modified by __root__ on 22-May-2026 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
@@ -29,12 +29,12 @@ class ArrowFunctionExpression extends AbstractExpression
 {
     public function __construct(AbstractExpression $expr, Node $names, $lineno)
     {
-        if (!$names instanceof ListExpression && !$names instanceof ContextVariable) {
-            throw new SyntaxError('The arrow function argument must be a list of variables or a single variable.', $names->getTemplateLine(), $names->getSourceContext());
-        }
-
         if ($names instanceof ContextVariable) {
             $names = new ListExpression([new AssignContextVariable($names->getAttribute('name'), $names->getTemplateLine())], $lineno);
+        }
+
+        if (!$names instanceof ListExpression) {
+            throw new SyntaxError('The arrow function argument must be a list of variables or a single variable.', $names->getTemplateLine(), $names->getSourceContext());
         }
 
         parent::__construct(['expr' => $expr, 'names' => $names], [], $lineno);

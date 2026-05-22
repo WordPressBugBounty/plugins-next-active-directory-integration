@@ -8,7 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 29-March-2026 using Strauss.
+ * Modified by __root__ on 22-May-2026 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
@@ -61,5 +61,11 @@ class DefinedTest extends TestExpression
     public function compile(Compiler $compiler): void
     {
         $compiler->subcompile($this->getNode('node'));
+    }
+
+    public function getStringCoercedChildNames(): array
+    {
+        // the `defined` test does not coerce its node to string (it only inspects existence)
+        return [];
     }
 }

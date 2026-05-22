@@ -9,7 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 29-March-2026 using Strauss.
+ * Modified by __root__ on 22-May-2026 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
@@ -161,7 +161,7 @@ abstract class Template
             if ($this->env->isDebug()) {
                 ob_start();
             } else {
-                ob_start(function () { return ''; });
+                ob_start(static function () { return ''; });
             }
             $this->displayParentBlock($name, $context, $blocks);
 
@@ -196,7 +196,7 @@ abstract class Template
             if ($this->env->isDebug()) {
                 ob_start();
             } else {
-                ob_start(function () { return ''; });
+                ob_start(static function () { return ''; });
             }
             try {
                 $this->displayBlock($name, $context, $blocks, $useBlocks);
@@ -370,7 +370,7 @@ abstract class Template
             if ($this->env->isDebug()) {
                 ob_start();
             } else {
-                ob_start(function () { return ''; });
+                ob_start(static function () { return ''; });
             }
             try {
                 $this->display($context);

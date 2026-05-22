@@ -8,7 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 29-March-2026 using Strauss.
+ * Modified by __root__ on 22-May-2026 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
@@ -31,16 +31,17 @@ use Dreitier\Nadi\Vendor\Twig\Node\Expression\AbstractExpression;
 #[YieldReady]
 class CheckToStringNode extends AbstractExpression
 {
-    public function __construct(AbstractExpression $expr)
+    public function __construct(AbstractExpression $expr, bool $spread = false)
     {
-        parent::__construct(['expr' => $expr], [], $expr->getTemplateLine());
+        parent::__construct(['expr' => $expr], ['spread' => $spread], $expr->getTemplateLine());
     }
 
     public function compile(Compiler $compiler): void
     {
         $expr = $this->getNode('expr');
+        $method = $this->getAttribute('spread') ? 'ensureSpreadAllowed' : 'ensureToStringAllowed';
         $compiler
-            ->raw('$this->sandbox->ensureToStringAllowed(')
+            ->raw('$this->sandbox->'.$method.'(')
             ->subcompile($expr)
             ->raw(', ')
             ->repr($expr->getTemplateLine())

@@ -8,7 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 29-March-2026 using Strauss.
+ * Modified by __root__ on 22-May-2026 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
@@ -16,14 +16,23 @@ namespace Dreitier\Nadi\Vendor\Twig\Node\Expression\Binary;
 
 use Dreitier\Nadi\Vendor\Twig\Compiler;
 use Dreitier\Nadi\Vendor\Twig\Error\SyntaxError;
+use Dreitier\Nadi\Vendor\Twig\Node\CoercesChildrenToStringInterface;
+use Dreitier\Nadi\Vendor\Twig\Node\Expression\AbstractExpression;
 use Dreitier\Nadi\Vendor\Twig\Node\Expression\ConstantExpression;
 use Dreitier\Nadi\Vendor\Twig\Node\Expression\ReturnBoolInterface;
 use Dreitier\Nadi\Vendor\Twig\Node\Node;
 
-class MatchesBinary extends AbstractBinary implements ReturnBoolInterface
+class MatchesBinary extends AbstractBinary implements ReturnBoolInterface, CoercesChildrenToStringInterface
 {
     public function __construct(Node $left, Node $right, int $lineno)
     {
+        if (!$left instanceof AbstractExpression) {
+            trigger_deprecation('twig/twig', '3.24', 'Passing a "%s" instance to "%s()" first argument is deprecated, pass an "AbstractExpression" instance instead.', $left::class, __METHOD__);
+        }
+        if (!$right instanceof AbstractExpression) {
+            trigger_deprecation('twig/twig', '3.24', 'Passing a "%s" instance to "%s()" second argument is deprecated, pass an "AbstractExpression" instance instead.', $right::class, __METHOD__);
+        }
+
         if ($right instanceof ConstantExpression) {
             $regexp = $right->getAttribute('value');
             set_error_handler(static fn ($t, $m) => throw new SyntaxError(\sprintf('Regexp "%s" passed to "matches" is not valid: %s.', $regexp, substr($m, 14)), $lineno));
@@ -51,5 +60,10 @@ class MatchesBinary extends AbstractBinary implements ReturnBoolInterface
     public function operator(Compiler $compiler): Compiler
     {
         return $compiler->raw('');
+    }
+
+    public function getStringCoercedChildNames(): array
+    {
+        return ['left', 'right'];
     }
 }

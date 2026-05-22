@@ -8,7 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 29-March-2026 using Strauss.
+ * Modified by __root__ on 22-May-2026 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
@@ -25,7 +25,7 @@ use Dreitier\Nadi\Vendor\Twig\Node\Expression\ConstantExpression;
  * @author Yonel Ceruto <yonelceruto@gmail.com>
  */
 #[YieldReady]
-class DeprecatedNode extends Node
+class DeprecatedNode extends Node implements CoercesChildrenToStringInterface
 {
     public function __construct(AbstractExpression $expr, int $lineno)
     {
@@ -72,5 +72,19 @@ class DeprecatedNode extends Node
             ->string(\sprintf(' in "%s" at line %d.', $this->getTemplateName(), $this->getTemplateLine()))
             ->raw(");\n")
         ;
+    }
+
+    public function getStringCoercedChildNames(): array
+    {
+        // the message is concatenated with `.`, and `package` / `version` are typed `string` on trigger_deprecation()
+        $names = ['expr'];
+        if ($this->hasNode('package')) {
+            $names[] = 'package';
+        }
+        if ($this->hasNode('version')) {
+            $names[] = 'version';
+        }
+
+        return $names;
     }
 }

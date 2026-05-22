@@ -8,7 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 29-March-2026 using Strauss.
+ * Modified by __root__ on 22-May-2026 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
@@ -46,10 +46,10 @@ use Dreitier\Nadi\Vendor\Twig\TokenParser\TokenParserInterface;
  */
 class Environment
 {
-    public const VERSION = '3.22.0';
-    public const VERSION_ID = 32200;
+    public const VERSION = '3.26.0';
+    public const VERSION_ID = 32600;
     public const MAJOR_VERSION = 3;
-    public const MINOR_VERSION = 22;
+    public const MINOR_VERSION = 26;
     public const RELEASE_VERSION = 0;
     public const EXTRA_VERSION = '';
 

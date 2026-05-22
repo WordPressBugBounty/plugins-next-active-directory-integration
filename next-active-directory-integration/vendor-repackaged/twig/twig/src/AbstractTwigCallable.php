@@ -8,7 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 29-March-2026 using Strauss.
+ * Modified by __root__ on 22-May-2026 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
@@ -35,6 +35,7 @@ abstract class AbstractTwigCallable implements TwigCallableInterface
             'needs_environment' => false,
             'needs_context' => false,
             'needs_charset' => false,
+            'needs_is_sandboxed' => false,
             'is_variadic' => false,
             'deprecation_info' => null,
             'deprecated' => false,
@@ -108,6 +109,11 @@ abstract class AbstractTwigCallable implements TwigCallableInterface
     public function needsContext(): bool
     {
         return $this->options['needs_context'];
+    }
+
+    public function needsIsSandboxed(): bool
+    {
+        return $this->options['needs_is_sandboxed'];
     }
 
     /**
@@ -185,6 +191,6 @@ abstract class AbstractTwigCallable implements TwigCallableInterface
 
     public function getMinimalNumberOfRequiredArguments(): int
     {
-        return ($this->options['needs_charset'] ? 1 : 0) + ($this->options['needs_environment'] ? 1 : 0) + ($this->options['needs_context'] ? 1 : 0) + \count($this->arguments);
+        return ($this->options['needs_charset'] ? 1 : 0) + ($this->options['needs_environment'] ? 1 : 0) + ($this->options['needs_context'] ? 1 : 0) + ($this->options['needs_is_sandboxed'] ? 1 : 0) + \count($this->arguments);
     }
 }

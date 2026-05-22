@@ -8,7 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 29-March-2026 using Strauss.
+ * Modified by __root__ on 22-May-2026 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
@@ -29,5 +29,10 @@ abstract class AbstractExpressionParser implements ExpressionParserInterface
     public function getAliases(): array
     {
         return [];
+    }
+
+    public function getOperatorTokens(): array
+    {
+        return [$this->getName(), ...$this->getAliases()];
     }
 }

@@ -8,13 +8,14 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 29-March-2026 using Strauss.
+ * Modified by __root__ on 22-May-2026 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
 namespace Dreitier\Nadi\Vendor\Twig\Node\Expression;
 
 use Dreitier\Nadi\Vendor\Twig\Compiler;
+use Dreitier\Nadi\Vendor\Twig\Error\SyntaxError;
 use Dreitier\Nadi\Vendor\Twig\Node\Expression\Unary\SpreadUnary;
 use Dreitier\Nadi\Vendor\Twig\Node\Expression\Unary\StringCastUnary;
 use Dreitier\Nadi\Vendor\Twig\Node\Expression\Variable\ContextVariable;
@@ -63,6 +64,31 @@ class ArrayExpression extends AbstractExpression implements SupportDefinedTestIn
         return false;
     }
 
+    /**
+     * Checks if the array is a sequence (keys are sequential integers starting from 0).
+     *
+     * @internal
+     */
+    public function isSequence(): bool
+    {
+        foreach ($this->getKeyValuePairs() as $i => $pair) {
+            $key = $pair['key'];
+            if ($key instanceof TempNameExpression) {
+                $keyValue = $key->getAttribute('name');
+            } elseif ($key instanceof ConstantExpression) {
+                $keyValue = $key->getAttribute('value');
+            } else {
+                return false;
+            }
+
+            if ($keyValue !== $i) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     public function addElement(AbstractExpression $value, ?AbstractExpression $key = null): void
     {
         if (null === $key) {
@@ -78,6 +104,13 @@ class ArrayExpression extends AbstractExpression implements SupportDefinedTestIn
             $compiler->repr(true);
 
             return;
+        }
+
+        // Check for empty expressions which are only allowed in destructuring
+        foreach ($this->getKeyValuePairs() as $pair) {
+            if ($pair['value'] instanceof EmptyExpression) {
+                throw new SyntaxError('Empty array elements are only allowed in destructuring assignments.', $pair['value']->getTemplateLine(), $this->getSourceContext());
+            }
         }
 
         $compiler->raw('[');

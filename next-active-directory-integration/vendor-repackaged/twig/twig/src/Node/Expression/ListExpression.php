@@ -8,19 +8,19 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 29-March-2026 using Strauss.
+ * Modified by __root__ on 22-May-2026 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
 namespace Dreitier\Nadi\Vendor\Twig\Node\Expression;
 
 use Dreitier\Nadi\Vendor\Twig\Compiler;
-use Dreitier\Nadi\Vendor\Twig\Node\Expression\Variable\ContextVariable;
+use Dreitier\Nadi\Vendor\Twig\Node\Expression\Variable\AssignContextVariable;
 
 class ListExpression extends AbstractExpression
 {
     /**
-     * @param array<ContextVariable> $items
+     * @param array<AssignContextVariable> $items
      */
     public function __construct(array $items, int $lineno)
     {

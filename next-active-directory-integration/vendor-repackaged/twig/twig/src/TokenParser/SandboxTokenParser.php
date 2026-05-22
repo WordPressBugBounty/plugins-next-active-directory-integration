@@ -8,7 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 29-March-2026 using Strauss.
+ * Modified by __root__ on 22-May-2026 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
@@ -44,7 +44,9 @@ final class SandboxTokenParser extends AbstractTokenParser
         $stream->expect(Token::BLOCK_END_TYPE);
 
         // in a sandbox tag, only include tags are allowed
-        if (!$body instanceof IncludeNode) {
+        if ($body instanceof IncludeNode) {
+            $body->setAttribute('sandboxed', true);
+        } else {
             foreach ($body as $node) {
                 if ($node instanceof TextNode && ctype_space($node->getAttribute('data'))) {
                     continue;
@@ -53,6 +55,8 @@ final class SandboxTokenParser extends AbstractTokenParser
                 if (!$node instanceof IncludeNode) {
                     throw new SyntaxError('Only "include" tags are allowed within a "sandbox" section.', $node->getTemplateLine(), $stream->getSourceContext());
                 }
+
+                $node->setAttribute('sandboxed', true);
             }
         }
 

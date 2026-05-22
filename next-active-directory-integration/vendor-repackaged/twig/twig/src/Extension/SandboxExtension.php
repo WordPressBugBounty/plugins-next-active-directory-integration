@@ -8,7 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 29-March-2026 using Strauss.
+ * Modified by __root__ on 22-May-2026 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
@@ -141,6 +141,24 @@ final class SandboxExtension extends AbstractExtension
                 throw $e;
             }
         }
+
+        return $obj;
+    }
+
+    /**
+     * Materialises a spread operand and runs the policy on every element.
+     *
+     * @internal
+     *
+     * @throws SecurityNotAllowedMethodError
+     */
+    public function ensureSpreadAllowed(iterable $obj, int $lineno = -1, ?Source $source = null): array
+    {
+        if ($obj instanceof \Traversable) {
+            $obj = iterator_to_array($obj);
+        }
+
+        $this->ensureToStringAllowedForArray($obj, $lineno, $source);
 
         return $obj;
     }

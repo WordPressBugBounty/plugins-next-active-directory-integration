@@ -8,7 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 29-March-2026 using Strauss.
+ * Modified by __root__ on 22-May-2026 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
@@ -98,6 +98,7 @@ final class AttributeExtension extends AbstractExtension
                     'needs_context' => $attribute->needsContext ?? false,
                     'needs_environment' => $attribute->needsEnvironment ?? $this->needsEnvironment($method),
                     'needs_charset' => $attribute->needsCharset ?? false,
+                    'needs_is_sandboxed' => $attribute->needsIsSandboxed ?? false,
                     'is_variadic' => $method->isVariadic(),
                     'is_safe' => $attribute->isSafe,
                     'is_safe_callback' => $attribute->isSafeCallback,
@@ -121,6 +122,7 @@ final class AttributeExtension extends AbstractExtension
                     'needs_context' => $attribute->needsContext ?? false,
                     'needs_environment' => $attribute->needsEnvironment ?? $this->needsEnvironment($method),
                     'needs_charset' => $attribute->needsCharset ?? false,
+                    'needs_is_sandboxed' => $attribute->needsIsSandboxed ?? false,
                     'is_variadic' => $method->isVariadic(),
                     'is_safe' => $attribute->isSafe,
                     'is_safe_callback' => $attribute->isSafeCallback,
@@ -142,6 +144,7 @@ final class AttributeExtension extends AbstractExtension
                     'needs_context' => $attribute->needsContext ?? false,
                     'needs_environment' => $attribute->needsEnvironment ?? $this->needsEnvironment($method),
                     'needs_charset' => $attribute->needsCharset ?? false,
+                    'needs_is_sandboxed' => $attribute->needsIsSandboxed ?? false,
                     'is_variadic' => $method->isVariadic(),
                     'deprecation_info' => $attribute->deprecationInfo,
                 ]);

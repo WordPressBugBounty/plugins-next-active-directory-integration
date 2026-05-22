@@ -9,13 +9,14 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 29-March-2026 using Strauss.
+ * Modified by __root__ on 22-May-2026 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
 namespace Dreitier\Nadi\Vendor\Twig;
 
 use Dreitier\Nadi\Vendor\Twig\Error\SyntaxError;
+use Dreitier\Nadi\Vendor\Twig\ExpressionParser\ExpressionParsers;
 
 /**
  * @author Fabien Potencier <fabien@symfony.com>
@@ -528,9 +529,9 @@ class Lexer
 
     private function getOperatorRegex(): string
     {
-        $expressionParsers = ['='];
+        $expressionParsers = [];
         foreach ($this->env->getExpressionParsers() as $expressionParser) {
-            $expressionParsers = array_merge($expressionParsers, [$expressionParser->getName()], $expressionParser->getAliases());
+            $expressionParsers = array_merge($expressionParsers, ExpressionParsers::getOperatorTokensFor($expressionParser));
         }
 
         $expressionParsers = array_combine($expressionParsers, array_map('strlen', $expressionParsers));
@@ -547,7 +548,7 @@ class Lexer
 
             // an operator that begins with a character must not have a dot or pipe before
             if (ctype_alpha($expressionParser[0])) {
-                $r = '(?<![\.\|])'.$r;
+                $r = '(?<![\.\|]\s|.[\.\|])'.$r;
             }
 
             // an operator with a space can be any amount of whitespaces

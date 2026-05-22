@@ -8,7 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 29-March-2026 using Strauss.
+ * Modified by __root__ on 22-May-2026 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
@@ -16,6 +16,8 @@ namespace Dreitier\Nadi\Vendor\Twig;
 
 /**
  * @author Fabien Potencier <fabien@symfony.com>
+ *
+ * @method bool needsIsSandboxed() Whether the callable needs the current sandbox state passed as an argument. Not implementing this method is deprecated since Twig 3.25, it will be required in 4.0.
  */
 interface TwigCallableInterface extends \Stringable
 {

@@ -8,7 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 29-March-2026 using Strauss.
+ * Modified by __root__ on 22-May-2026 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
@@ -29,6 +29,10 @@ use Dreitier\Nadi\Vendor\Twig\Extension\StagingExtension;
 use Dreitier\Nadi\Vendor\Twig\Node\Expression\AbstractExpression;
 use Dreitier\Nadi\Vendor\Twig\NodeVisitor\NodeVisitorInterface;
 use Dreitier\Nadi\Vendor\Twig\TokenParser\TokenParserInterface;
+
+// Help opcache.preload discover always-needed symbols
+// @see https://github.com/php/php-src/issues/10131
+class_exists(BinaryOperatorExpressionParser::class);
 
 /**
  * @author Fabien Potencier <fabien@symfony.com>

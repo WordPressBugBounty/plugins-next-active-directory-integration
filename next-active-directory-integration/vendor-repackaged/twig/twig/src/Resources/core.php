@@ -8,12 +8,15 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 29-March-2026 using Strauss.
+ * Modified by __root__ on 22-May-2026 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
 use Dreitier\Nadi\Vendor\Twig\Environment;
 use Dreitier\Nadi\Vendor\Twig\Extension\CoreExtension;
+use Dreitier\Nadi\Vendor\Twig\Extension\SandboxExtension;
+use Dreitier\Nadi\Vendor\Twig\Source;
+use Dreitier\Nadi\Vendor\Twig\Template;
 
 /**
  * @internal
@@ -240,7 +243,7 @@ function dreitier_nadi__twig_sort_filter(Environment $env, $array, $arrow = null
 {
     trigger_deprecation('twig/twig', '3.9', 'Using the internal "%s" function is deprecated.', __FUNCTION__);
 
-    return CoreExtension::sort($env, $array, $arrow);
+    return CoreExtension::sort($env, dreitier_nadi__twig_resolve_is_sandboxed($env), $array, $arrow);
 }
 
 /**
@@ -464,11 +467,11 @@ function dreitier_nadi__twig_array_batch($items, $size, $fill = null, $preserveK
  *
  * @deprecated since Twig 3.9
  */
-function dreitier_nadi__twig_array_column($array, $name, $index = null): array
+function dreitier_nadi__twig_array_column(Environment $env, $array, $name, $index = null): array
 {
     trigger_deprecation('twig/twig', '3.9', 'Using the internal "%s" function is deprecated.', __FUNCTION__);
 
-    return CoreExtension::column($array, $name, $index);
+    return CoreExtension::column($env, dreitier_nadi__twig_resolve_is_sandboxed($env), $array, $name, $index);
 }
 
 /**
@@ -480,7 +483,7 @@ function dreitier_nadi__twig_array_filter(Environment $env, $array, $arrow)
 {
     trigger_deprecation('twig/twig', '3.9', 'Using the internal "%s" function is deprecated.', __FUNCTION__);
 
-    return CoreExtension::filter($env, $array, $arrow);
+    return CoreExtension::filter($env, dreitier_nadi__twig_resolve_is_sandboxed($env), $array, $arrow);
 }
 
 /**
@@ -492,7 +495,7 @@ function dreitier_nadi__twig_array_map(Environment $env, $array, $arrow)
 {
     trigger_deprecation('twig/twig', '3.9', 'Using the internal "%s" function is deprecated.', __FUNCTION__);
 
-    return CoreExtension::map($env, $array, $arrow);
+    return CoreExtension::map($env, dreitier_nadi__twig_resolve_is_sandboxed($env), $array, $arrow);
 }
 
 /**
@@ -504,7 +507,7 @@ function dreitier_nadi__twig_array_reduce(Environment $env, $array, $arrow, $ini
 {
     trigger_deprecation('twig/twig', '3.9', 'Using the internal "%s" function is deprecated.', __FUNCTION__);
 
-    return CoreExtension::reduce($env, $array, $arrow, $initial);
+    return CoreExtension::reduce($env, dreitier_nadi__twig_resolve_is_sandboxed($env), $array, $arrow, $initial);
 }
 
 /**
@@ -541,4 +544,32 @@ function dreitier_nadi__twig_check_arrow_in_sandbox(Environment $env, $arrow, $t
     trigger_deprecation('twig/twig', '3.9', 'Using the internal "%s" function is deprecated.', __FUNCTION__);
 
     CoreExtension::checkArrow($env, $arrow, $thing, $type);
+}
+
+/**
+ * Recovers the calling Template's Source by walking the PHP backtrace.
+ *
+ * @internal
+ */
+function dreitier_nadi__twig_resolve_caller_source(): ?Source
+{
+    foreach (debug_backtrace(\DEBUG_BACKTRACE_PROVIDE_OBJECT | \DEBUG_BACKTRACE_IGNORE_ARGS) as $trace) {
+        if (isset($trace['object']) && $trace['object'] instanceof Template) {
+            return $trace['object']->getSourceContext();
+        }
+    }
+
+    return null;
+}
+
+/**
+ * @internal
+ */
+function dreitier_nadi__twig_resolve_is_sandboxed(Environment $env): bool
+{
+    if (!$env->hasExtension(SandboxExtension::class)) {
+        return false;
+    }
+
+    return $env->getExtension(SandboxExtension::class)->isSandboxed(dreitier_nadi__twig_resolve_caller_source());
 }

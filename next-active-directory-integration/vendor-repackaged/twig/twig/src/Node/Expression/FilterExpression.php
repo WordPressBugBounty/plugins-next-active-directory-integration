@@ -9,7 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 29-March-2026 using Strauss.
+ * Modified by __root__ on 22-May-2026 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
@@ -17,11 +17,12 @@ namespace Dreitier\Nadi\Vendor\Twig\Node\Expression;
 
 use Dreitier\Nadi\Vendor\Twig\Attribute\FirstClassTwigCallableReady;
 use Dreitier\Nadi\Vendor\Twig\Compiler;
+use Dreitier\Nadi\Vendor\Twig\Node\CoercesChildrenToStringInterface;
 use Dreitier\Nadi\Vendor\Twig\Node\NameDeprecation;
 use Dreitier\Nadi\Vendor\Twig\Node\Node;
 use Dreitier\Nadi\Vendor\Twig\TwigFilter;
 
-class FilterExpression extends CallExpression
+class FilterExpression extends CallExpression implements CoercesChildrenToStringInterface
 {
     /**
      * @param AbstractExpression $node
@@ -79,5 +80,11 @@ class FilterExpression extends CallExpression
         }
 
         $this->compileCallable($compiler);
+    }
+
+    public function getStringCoercedChildNames(): array
+    {
+        // a filter may coerce its input and arguments to string (e.g. `upper`, `replace`)
+        return ['node', 'arguments'];
     }
 }
