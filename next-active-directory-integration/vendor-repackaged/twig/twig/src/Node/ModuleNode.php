@@ -9,7 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 22-May-2026 using Strauss.
+ * Modified by __root__ on 26-August-2026 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
@@ -187,6 +187,7 @@ final class ModuleNode extends Node implements CoercesChildrenToStringInterface
                 ->write("use Dreitier\Nadi\Vendor\Twig\Sandbox\SecurityNotAllowedTagError;\n")
                 ->write("use Dreitier\Nadi\Vendor\Twig\Sandbox\SecurityNotAllowedFilterError;\n")
                 ->write("use Dreitier\Nadi\Vendor\Twig\Sandbox\SecurityNotAllowedFunctionError;\n")
+                ->write("use Dreitier\Nadi\Vendor\Twig\Sandbox\SecurityNotAllowedTestError;\n")
                 ->write("use Dreitier\Nadi\Vendor\Twig\Source;\n")
                 ->write("use Dreitier\Nadi\Vendor\Twig\Template;\n")
                 ->write("use Dreitier\Nadi\Vendor\Twig\TemplateWrapper;\n")

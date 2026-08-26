@@ -8,7 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 22-May-2026 using Strauss.
+ * Modified by __root__ on 26-August-2026 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
@@ -25,10 +25,11 @@ interface SecurityPolicyInterface
      * @param string[] $tags
      * @param string[] $filters
      * @param string[] $functions
+     * @param string[] $tests
      *
      * @throws SecurityError
      */
-    public function checkSecurity($tags, $filters, $functions): void;
+    public function checkSecurity($tags, $filters, $functions/* , array $tests */): void;
 
     /**
      * @param object $obj

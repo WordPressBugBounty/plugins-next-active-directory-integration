@@ -8,7 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 22-May-2026 using Strauss.
+ * Modified by __root__ on 26-August-2026 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
@@ -16,7 +16,7 @@ namespace Dreitier\Nadi\Vendor\Twig\TokenParser;
 
 use Dreitier\Nadi\Vendor\Twig\Error\SyntaxError;
 use Dreitier\Nadi\Vendor\Twig\Node\BodyNode;
-use Dreitier\Nadi\Vendor\Twig\Node\EmptyNode;
+use Dreitier\Nadi\Vendor\Twig\Node\ConfigNode;
 use Dreitier\Nadi\Vendor\Twig\Node\Expression\ArrayExpression;
 use Dreitier\Nadi\Vendor\Twig\Node\Expression\ConstantExpression;
 use Dreitier\Nadi\Vendor\Twig\Node\Expression\Unary\NegUnary;
@@ -59,7 +59,7 @@ final class MacroTokenParser extends AbstractTokenParser
 
         $this->parser->setMacro($name, new MacroNode($name, new BodyNode([$body]), $arguments, $lineno));
 
-        return new EmptyNode($lineno);
+        return new ConfigNode($lineno);
     }
 
     public function decideBlockEnd(Token $token): bool

@@ -9,7 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 22-May-2026 using Strauss.
+ * Modified by __root__ on 26-August-2026 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
@@ -18,6 +18,8 @@ namespace Dreitier\Nadi\Vendor\Twig\Node;
 use Dreitier\Nadi\Vendor\Twig\Attribute\YieldReady;
 use Dreitier\Nadi\Vendor\Twig\Compiler;
 use Dreitier\Nadi\Vendor\Twig\Node\Expression\AbstractExpression;
+use Dreitier\Nadi\Vendor\Twig\Node\Expression\ConstantExpression;
+use Dreitier\Nadi\Vendor\Twig\Node\Expression\ReturnStringInterface;
 
 /**
  * Represents a node that outputs an expression.
@@ -37,9 +39,18 @@ class PrintNode extends Node implements NodeOutputInterface, CoercesChildrenToSt
         /** @var AbstractExpression */
         $expr = $this->getNode('expr');
 
+        $compiler->addDebugInfo($this);
+
+        if ($expr->isGenerator()) {
+            $compiler->write('yield from ');
+        } else {
+            $compiler->write('yield ');
+            if (!$this->isString($expr)) {
+                $compiler->raw('(string) ');
+            }
+        }
+
         $compiler
-            ->addDebugInfo($this)
-            ->write($expr->isGenerator() ? 'yield from ' : 'yield ')
             ->subcompile($expr)
             ->raw(";\n")
         ;
@@ -48,5 +59,14 @@ class PrintNode extends Node implements NodeOutputInterface, CoercesChildrenToSt
     public function getStringCoercedChildNames(): array
     {
         return ['expr'];
+    }
+
+    private function isString(AbstractExpression $expr): bool
+    {
+        if ($expr instanceof ReturnStringInterface) {
+            return true;
+        }
+
+        return $expr instanceof ConstantExpression && !$expr->isDefinedTestEnabled() && \is_string($expr->getAttribute('value'));
     }
 }

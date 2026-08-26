@@ -8,7 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 22-May-2026 using Strauss.
+ * Modified by __root__ on 26-August-2026 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
@@ -23,6 +23,8 @@ use Dreitier\Nadi\Vendor\Twig\Token;
  * Interface implemented by token parsers.
  *
  * @author Fabien Potencier <fabien@symfony.com>
+ *
+ * @method bool isAlwaysAllowedInSandbox() Whether the tag is always allowed in sandbox mode, even when not explicitly allow-listed. Not implementing this method is deprecated since Twig 3.28, it will be required in 4.0.
  */
 interface TokenParserInterface
 {

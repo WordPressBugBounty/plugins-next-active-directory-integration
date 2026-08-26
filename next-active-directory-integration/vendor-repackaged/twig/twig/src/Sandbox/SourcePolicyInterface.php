@@ -8,7 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 22-May-2026 using Strauss.
+ * Modified by __root__ on 26-August-2026 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
@@ -20,6 +20,8 @@ use Dreitier\Nadi\Vendor\Twig\Source;
  * Interface for a class that can optionally enable the sandbox mode based on a template's Twig\Source.
  *
  * @author Yaakov Saxon
+ *
+ * @deprecated since Twig 3.27.0 with no replacement
  */
 interface SourcePolicyInterface
 {

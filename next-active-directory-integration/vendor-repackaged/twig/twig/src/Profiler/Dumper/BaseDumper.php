@@ -8,7 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 22-May-2026 using Strauss.
+ * Modified by __root__ on 26-August-2026 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
@@ -34,11 +34,16 @@ abstract class BaseDumper
 
     abstract protected function formatTime(Profile $profile, $percent): string;
 
+    protected function formatRoot(Profile $profile): string
+    {
+        return $profile->getName();
+    }
+
     private function dumpProfile(Profile $profile, $prefix = '', $sibling = false): string
     {
         if ($profile->isRoot()) {
             $this->root = $profile->getDuration();
-            $start = $profile->getName();
+            $start = $this->formatRoot($profile);
         } else {
             if ($profile->isTemplate()) {
                 $start = $this->formatTemplate($profile, $prefix);

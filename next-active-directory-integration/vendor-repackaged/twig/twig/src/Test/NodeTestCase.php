@@ -8,7 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 22-May-2026 using Strauss.
+ * Modified by __root__ on 26-August-2026 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
@@ -48,12 +48,14 @@ abstract class NodeTestCase extends TestCase
     }
 
     /**
+     * The non-static "getTests" is intentionally not mirrored as an attribute: PHPUnit >= 11 rejects non-static providers, so PHPUnit >= 10 relies on the static "provideTests" instead.
+     *
      * @dataProvider getTests
      * @dataProvider provideTests
      *
      * @return void
      */
-    #[DataProvider('getTests'), DataProvider('provideTests')]
+    #[DataProvider('provideTests')]
     public function testCompile($node, $source, $environment = null, $isPattern = false)
     {
         $this->assertNodeCompilation($source, $node, $environment, $isPattern);

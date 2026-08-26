@@ -8,12 +8,13 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 22-May-2026 using Strauss.
+ * Modified by __root__ on 26-August-2026 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
 namespace Dreitier\Nadi\Vendor\Twig\Util;
 
+use Dreitier\Nadi\Vendor\Twig\Node\Expression\CallExpression;
 use Dreitier\Nadi\Vendor\Twig\TwigCallableInterface;
 
 /**
@@ -28,7 +29,7 @@ final class ReflectionCallable
     private $name;
 
     public function __construct(
-        TwigCallableInterface $twigCallable,
+        private TwigCallableInterface $twigCallable,
     ) {
         $callable = $twigCallable->getCallable();
         if (\is_string($callable) && false !== $pos = strpos($callable, '::')) {
@@ -81,6 +82,41 @@ final class ReflectionCallable
     public function getReflector(): \ReflectionFunctionAbstract
     {
         return $this->reflector;
+    }
+
+    /**
+     * Returns the PHP parameters that map to the callable's template-level
+     * arguments.
+     *
+     * The parameters Twig injects automatically (the piped input value when
+     * $stripInput is true, then needs_charset/environment/context/is_sandboxed)
+     * and the bound arguments are stripped.
+     *
+     * @return list<\ReflectionParameter>
+     */
+    public function getTwigParameters(bool $stripInput = false): array
+    {
+        $parameters = $this->reflector->getParameters();
+        if ($stripInput) {
+            array_shift($parameters);
+        }
+        if ($this->twigCallable->needsCharset()) {
+            array_shift($parameters);
+        }
+        if ($this->twigCallable->needsEnvironment()) {
+            array_shift($parameters);
+        }
+        if ($this->twigCallable->needsContext()) {
+            array_shift($parameters);
+        }
+        if (CallExpression::needsIsSandboxed($this->twigCallable)) {
+            array_shift($parameters);
+        }
+        foreach ($this->twigCallable->getArguments() as $argument) {
+            array_shift($parameters);
+        }
+
+        return array_values($parameters);
     }
 
     /**

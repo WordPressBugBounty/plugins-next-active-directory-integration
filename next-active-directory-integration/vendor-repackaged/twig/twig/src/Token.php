@@ -9,7 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 22-May-2026 using Strauss.
+ * Modified by __root__ on 26-August-2026 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
@@ -42,10 +42,14 @@ final class Token
      */
     public const SPREAD_TYPE = 13;
 
+    /**
+     * @param non-negative-int|null $offset
+     */
     public function __construct(
         private int $type,
         private $value,
         private int $lineno,
+        private ?int $offset = null,
     ) {
         if (self::ARROW_TYPE === $type) {
             trigger_deprecation('twig/twig', '3.21', 'The "%s" token type is deprecated, "arrow" is now an operator.', self::ARROW_TYPE);
@@ -125,6 +129,19 @@ final class Token
     public function getLine(): int
     {
         return $this->lineno;
+    }
+
+    /**
+     * Returns the 0-based byte offset of the token in the source code.
+     *
+     * Returns null for tokens that are not tied to a source position (e.g.
+     * tokens synthesized by a token parser).
+     *
+     * @return non-negative-int|null
+     */
+    public function getOffset(): ?int
+    {
+        return $this->offset;
     }
 
     /**

@@ -9,7 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 22-May-2026 using Strauss.
+ * Modified by __root__ on 26-August-2026 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
@@ -118,6 +118,9 @@ class ForNode extends Node
         $compiler->raw(");\n");
 
         // keep the values set in the inner context for variables defined in the outer context
-        $compiler->write("\$context = array_intersect_key(\$context, \$_parent) + \$_parent;\n");
+        $compiler
+            ->write("\$context = array_intersect_key(\$context, \$_parent);\n")
+            ->write("\$context += \$_parent;\n")
+        ;
     }
 }

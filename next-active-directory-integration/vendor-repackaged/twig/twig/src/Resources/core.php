@@ -8,7 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 22-May-2026 using Strauss.
+ * Modified by __root__ on 26-August-2026 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
@@ -519,7 +519,7 @@ function dreitier_nadi__twig_array_some(Environment $env, $array, $arrow)
 {
     trigger_deprecation('twig/twig', '3.9', 'Using the internal "%s" function is deprecated.', __FUNCTION__);
 
-    return CoreExtension::arraySome($env, $array, $arrow);
+    return CoreExtension::arraySome($env, $array, $arrow, dreitier_nadi__twig_resolve_is_sandboxed($env));
 }
 
 /**
@@ -531,7 +531,7 @@ function dreitier_nadi__twig_array_every(Environment $env, $array, $arrow)
 {
     trigger_deprecation('twig/twig', '3.9', 'Using the internal "%s" function is deprecated.', __FUNCTION__);
 
-    return CoreExtension::arrayEvery($env, $array, $arrow);
+    return CoreExtension::arrayEvery($env, $array, $arrow, dreitier_nadi__twig_resolve_is_sandboxed($env));
 }
 
 /**
@@ -543,7 +543,7 @@ function dreitier_nadi__twig_check_arrow_in_sandbox(Environment $env, $arrow, $t
 {
     trigger_deprecation('twig/twig', '3.9', 'Using the internal "%s" function is deprecated.', __FUNCTION__);
 
-    CoreExtension::checkArrow($env, $arrow, $thing, $type);
+    CoreExtension::checkArrow(dreitier_nadi__twig_resolve_is_sandboxed($env), $arrow, $thing, $type);
 }
 
 /**

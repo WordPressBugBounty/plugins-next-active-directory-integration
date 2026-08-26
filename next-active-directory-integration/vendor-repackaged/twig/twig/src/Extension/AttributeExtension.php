@@ -8,7 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 22-May-2026 using Strauss.
+ * Modified by __root__ on 26-August-2026 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
@@ -104,6 +104,7 @@ final class AttributeExtension extends AbstractExtension
                     'is_safe_callback' => $attribute->isSafeCallback,
                     'pre_escape' => $attribute->preEscape,
                     'preserves_safety' => $attribute->preservesSafety,
+                    'always_allowed_in_sandbox' => $attribute->alwaysAllowedInSandbox ?? false,
                     'deprecation_info' => $attribute->deprecationInfo,
                 ]);
 
@@ -126,6 +127,7 @@ final class AttributeExtension extends AbstractExtension
                     'is_variadic' => $method->isVariadic(),
                     'is_safe' => $attribute->isSafe,
                     'is_safe_callback' => $attribute->isSafeCallback,
+                    'always_allowed_in_sandbox' => $attribute->alwaysAllowedInSandbox ?? false,
                     'deprecation_info' => $attribute->deprecationInfo,
                 ]);
 
@@ -146,6 +148,7 @@ final class AttributeExtension extends AbstractExtension
                     'needs_charset' => $attribute->needsCharset ?? false,
                     'needs_is_sandboxed' => $attribute->needsIsSandboxed ?? false,
                     'is_variadic' => $method->isVariadic(),
+                    'always_allowed_in_sandbox' => $attribute->alwaysAllowedInSandbox ?? false,
                     'deprecation_info' => $attribute->deprecationInfo,
                 ]);
 

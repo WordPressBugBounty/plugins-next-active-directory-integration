@@ -9,7 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 22-May-2026 using Strauss.
+ * Modified by __root__ on 26-August-2026 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
@@ -40,5 +40,21 @@ class TextNode extends Node implements NodeOutputInterface
             ->string($this->getAttribute('data'))
             ->raw(";\n")
         ;
+    }
+
+    public function isBlank(): bool
+    {
+        if (ctype_space($this->getAttribute('data'))) {
+            return true;
+        }
+
+        if (str_contains((string) $this, \chr(0xEF).\chr(0xBB).\chr(0xBF))) {
+            $t = substr($this->getAttribute('data'), 3);
+            if ('' === $t || ctype_space($t)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

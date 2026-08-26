@@ -8,7 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 22-May-2026 using Strauss.
+ * Modified by __root__ on 26-August-2026 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
@@ -31,6 +31,11 @@ final class HtmlDumper extends BaseDumper
     public function dump(Profile $profile): string
     {
         return '<pre>'.parent::dump($profile).'</pre>';
+    }
+
+    protected function formatRoot(Profile $profile): string
+    {
+        return self::escape($profile->getName());
     }
 
     protected function formatTemplate(Profile $profile, $prefix): string

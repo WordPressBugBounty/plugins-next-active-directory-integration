@@ -8,7 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Modified by __root__ on 22-May-2026 using Strauss.
+ * Modified by __root__ on 26-August-2026 using Strauss.
  * @see https://github.com/BrianHenryIE/strauss
  */
 
@@ -16,7 +16,6 @@ namespace Dreitier\Nadi\Vendor\Twig\Util;
 
 use Dreitier\Nadi\Vendor\Twig\Error\SyntaxError;
 use Dreitier\Nadi\Vendor\Twig\Node\Expression\ArrayExpression;
-use Dreitier\Nadi\Vendor\Twig\Node\Expression\CallExpression;
 use Dreitier\Nadi\Vendor\Twig\Node\Expression\ConstantExpression;
 use Dreitier\Nadi\Vendor\Twig\Node\Expression\VariadicExpression;
 use Dreitier\Nadi\Vendor\Twig\Node\Node;
@@ -187,25 +186,7 @@ final class CallableArgumentsExtractor
 
     private function getCallableParameters(): array
     {
-        $parameters = $this->rc->getReflector()->getParameters();
-        if ($this->node->hasNode('node')) {
-            array_shift($parameters);
-        }
-        if ($this->twigCallable->needsCharset()) {
-            array_shift($parameters);
-        }
-        if ($this->twigCallable->needsEnvironment()) {
-            array_shift($parameters);
-        }
-        if ($this->twigCallable->needsContext()) {
-            array_shift($parameters);
-        }
-        if (CallExpression::needsIsSandboxed($this->twigCallable)) {
-            array_shift($parameters);
-        }
-        foreach ($this->twigCallable->getArguments() as $argument) {
-            array_shift($parameters);
-        }
+        $parameters = $this->rc->getTwigParameters($this->node->hasNode('node'));
 
         $isPhpVariadic = false;
         if ($this->twigCallable->isVariadic()) {
